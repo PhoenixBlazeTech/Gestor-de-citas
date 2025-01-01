@@ -1,0 +1,12 @@
+# Entorno virtual
+venv/
+
+# Dependencias de Node.js
+node_modules/
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de configuración de IDE
+.vscode/

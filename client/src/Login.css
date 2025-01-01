@@ -1,0 +1,121 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f2f5; /* Fondo similar al login de Facebook */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  /* Contenedor principal del formulario */
+  .Container_log {
+    background-color: #ffffff; /* Fondo blanco del formulario */
+    padding: 30px 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column; /* Alinear elementos verticalmente */
+    align-items: center; /* Centrar los elementos horizontalmente */
+    gap: 15px; /* Espaciado entre los elementos */
+}
+  /* Título */
+h1 {
+    font-size: 32px;
+    color: #1877f2; /* Azul de Facebook */
+    font-weight: bold;
+    text-transform: lowercase;
+}
+  /* Campos de entrada */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #dddfe2; /* Borde gris claro */
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
+input[type="text"]:focus,
+input[type="password"]:focus {
+    outline: none;
+    border-color: #1877f2; /* Azul al enfocar */
+    box-shadow: 0 0 4px rgba(24, 119, 242, 0.4); /* Sombra azul clara */
+  }
+  
+  /* Botón de inicio de sesión */
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    background-color: #1877f2; /* Azul Facebook */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #165ec9; /* Azul más oscuro al pasar el mouse */
+  }
+  
+  /* Enlace de olvidaste tu cuenta */
+  a {
+    font-size: 14px;
+    color: #1877f2; /* Azul de Facebook */
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Botón de crear cuenta */
+  button.create-account {
+    width: 100%;
+    padding: 12px;
+    background-color: #42b72a; /* Verde Facebook */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button.create-account:hover {
+    background-color: #36a420; /* Verde más oscuro */
+  }
+  
+  /* Responsivo */
+  @media (max-width: 500px) {
+    .Container_log {
+      padding: 20px 30px;
+    }
+  
+    h1 {
+      font-size: 28px;
+    }
+  
+    input[type="text"],
+    input[type="password"] {
+      font-size: 13px;
+    }
+  
+    button {
+      font-size: 14px;
+    }
+  }
+  
