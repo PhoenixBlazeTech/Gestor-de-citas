@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS  # Importar Flask-CORS
-import cx_Oracle
+import oracledb  # Cambiado de cx_Oracle a oracledb
 
 app = Flask(__name__)
 CORS(app)  # Habilitar CORS para todas las rutas
@@ -9,6 +9,9 @@ CORS(app)  # Habilitar CORS para todas las rutas
 username = "usr_citas"
 password = "citapass"
 dsn = "localhost:1521/xepdb1"
+
+# Configuración para oracledb
+oracledb.init_oracle_client()  # Asegúrate de que Oracle Instant Client esté configurado
 
 @app.route('/')
 def home():
@@ -24,7 +27,7 @@ def login():
 
     try:
         # Conexión a Oracle
-        connection = cx_Oracle.connect(user=username, password=password, dsn=dsn)
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
         cursor = connection.cursor()
 
         # Verificar en la tabla MEDICO
@@ -60,11 +63,10 @@ def login():
         if empleado:
             return jsonify({"ok": True, "rol": "empleado", "id": empleado[0], "nombre": empleado[1]})
 
-
         # Si no se encuentra en ninguna tabla
         return jsonify({"ok": False, "message": "Credenciales incorrectas"}), 401
 
-    except cx_Oracle.Error as error:
+    except oracledb.DatabaseError as error:
         print(f"Error al conectar con la base de datos: {error}")  # Log del error
         return jsonify({"error": "Error al conectar con la base de datos"}), 500
 
@@ -76,4 +78,3 @@ def login():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
