@@ -19,6 +19,9 @@ function Login() {
         const data = await response.json();
     
         if (response.ok && data.ok) {
+              // Guardar el nombre completo del usuario en localStorage
+            localStorage.setItem("nombreCompleto", data.nombre);
+            localStorage.setItem("role", data.rol);
             // Redirigir según el rol
             if (data.rol === "medico") {
             navigate("/medico");
@@ -36,7 +39,7 @@ function Login() {
     }
     };
     return (
-    <>
+    <div className="Content">
         <h1>CitaCare</h1>
         <div className="Container_log">
             <h2>Inicio de Sesion</h2>
@@ -46,7 +49,7 @@ function Login() {
                 <button type="submit">Iniciar Sesion</button>
             </form>
         </div>
-    </>
+    </div>
     );
 }
 

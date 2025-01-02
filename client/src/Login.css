@@ -5,13 +5,15 @@
     box-sizing: border-box;
   }
   
-  body {
+  .Content{
     font-family: Arial, sans-serif;
     background-color: #f0f2f5; /* Fondo similar al login de Facebook */
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    width: 100%;
+    flex-direction: column;
   }
   
   /* Contenedor principal del formulario */

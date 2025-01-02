@@ -28,25 +28,38 @@ def login():
         cursor = connection.cursor()
 
         # Verificar en la tabla MEDICO
-        query_medico = "SELECT MEDICO_ID FROM MEDICO WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia"
+        query_medico = """
+            SELECT MEDICO_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO
+            FROM MEDICO
+            WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia
+        """
         cursor.execute(query_medico, usuario=usuario, contrasenia=contrasenia)
         medico = cursor.fetchone()
         if medico:
-            return jsonify({"ok": True, "rol": "medico", "id": medico[0]})
+            return jsonify({"ok": True, "rol": "medico", "id": medico[0], "nombre": medico[1]})
 
         # Verificar en la tabla PACIENTE
-        query_paciente = "SELECT PACIENTE_ID FROM PACIENTE WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia"
+        query_paciente = """
+            SELECT PACIENTE_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO
+            FROM PACIENTE
+            WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia
+        """
         cursor.execute(query_paciente, usuario=usuario, contrasenia=contrasenia)
         paciente = cursor.fetchone()
         if paciente:
-            return jsonify({"ok": True, "rol": "paciente", "id": paciente[0]})
+            return jsonify({"ok": True, "rol": "paciente", "id": paciente[0], "nombre": paciente[1]})
 
         # Verificar en la tabla EMPLEADO
-        query_empleado = "SELECT EMPLEADO_ID FROM EMPLEADO WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia"
+        query_empleado = """
+            SELECT EMPLEADO_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO
+            FROM EMPLEADO
+            WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia
+        """
         cursor.execute(query_empleado, usuario=usuario, contrasenia=contrasenia)
         empleado = cursor.fetchone()
         if empleado:
-            return jsonify({"ok": True, "rol": "empleado", "id": empleado[0]})
+            return jsonify({"ok": True, "rol": "empleado", "id": empleado[0], "nombre": empleado[1]})
+
 
         # Si no se encuentra en ninguna tabla
         return jsonify({"ok": False, "message": "Credenciales incorrectas"}), 401

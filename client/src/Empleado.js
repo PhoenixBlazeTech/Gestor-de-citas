@@ -1,7 +1,11 @@
+import Header from "./Header";
+import Main from "./Main";
+
 function Empleado(){
     return(
         <>
-            <h1>Bienvenido empleado</h1>
+            <Header/>
+            <Main/>
         </>
     );
 }

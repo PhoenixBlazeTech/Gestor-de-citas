@@ -1,8 +1,11 @@
+import Header from './Header';
+import Main from "./Main";
 
 function Medico(){
     return(
         <>
-            <h1>Bienvenido</h1>
+            <Header/>
+            <Main/>
         </>
     );
 }

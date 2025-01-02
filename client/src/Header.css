@@ -1,0 +1,91 @@
+
+.Header {
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    width: 100%;
+}
+
+.user-menu {
+    position: relative;
+}
+
+.user-button {
+    display: flex;
+    align-items: center;
+    background-color: #003366;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .user-button .dropdown-arrow {
+    margin-left: 8px;
+  }
+  
+  .user-button:hover {
+    background-color: #002244;
+  }
+  
+  .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    list-style: none;
+    padding: 0;
+    margin: 5px 0;
+    width: 150px;
+  }
+  
+  .dropdown-menu li {
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .dropdown-menu li:last-child {
+    border-bottom: none;
+  }
+  
+  .dropdown-menu button {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .dropdown-menu button:hover {
+    background-color: #f8f9fa;
+  }
+
+
+  
+
+  .Logo{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap:10px;
+  }
+
+  .Logo img {
+    width: 40px; /* Tamaño del logo */
+    height: 40px; /* Tamaño del logo */
+}
+
+.Logo h1 {
+    margin: 0; /* Elimina márgenes por defecto */
+    font-size: 20px; /* Tamaño del texto */
+    color: #003366; /* Color del texto */
+}

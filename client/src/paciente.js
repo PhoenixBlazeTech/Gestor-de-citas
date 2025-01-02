@@ -1,10 +1,12 @@
-
+import Header from "./Header";
+import Main from "./Main";
 
 
 function Paciente(){
     return(
         <>
-            <h1>Bienvenido Paciente</h1>
+            <Header/>
+            <Main/>
         </>
     );
 }
