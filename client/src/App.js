@@ -4,6 +4,8 @@ import Login from "./login";
 import Medico from "./Medico";
 import Paciente from "./paciente";
 import Empleado from "./Empleado";
+import Configuracion from "./Configuracion"; // Importa el componente de configuración
+import Main from "./Main";
 
 function App() {
   return (
@@ -21,6 +23,8 @@ function App() {
 
           {/* Ruta para Empleado */}
           <Route path="/empleado" element={<Empleado />} />
+          <Route path="/" element={<Main />} />
+          <Route path="/configuracion" element={<Configuracion />} />
         </Routes>
       </BrowserRouter>
     </div>

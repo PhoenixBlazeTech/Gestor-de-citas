@@ -76,5 +76,172 @@ def login():
         if connection:
             connection.close()
 
+@app.route('/api/especialidades', methods=['GET'])
+def get_especialidades():
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        query = "SELECT ESPEC_ID, NOMBRE FROM ESPECIALIDAD"
+        cursor.execute(query)
+        especialidades = [{"ESPEC_ID": row[0], "NOMBRE": row[1]} for row in cursor]
+
+        return jsonify(especialidades)
+
+    except oracledb.DatabaseError as error:
+        print(f"Error al obtener especialidades: {error}")
+        return jsonify({"error": "Error al obtener especialidades"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/medico/update', methods=['POST'])
+def update_medico():
+    data = request.json
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        query = """
+            UPDATE MEDICO
+            SET NOMBRE = :nombre,
+                APELLIDO_PAT = :apellido_pat,
+                APELLIDO_MAT = :apellido_mat,
+                HORARIO = TO_DATE(:horario, 'YYYY-MM-DD"T"HH24:MI:SS'),
+                ESPEC_ID = :especialidad
+            WHERE MEDICO_ID = :medico_id
+        """
+        cursor.execute(query, {
+            "nombre": data["nombre"],
+            "apellido_pat": data["apellidoPat"],
+            "apellido_mat": data["apellidoMat"],
+            "horario": data["horario"],
+            "especialidad": data["especialidad"],
+            "medico_id": data["id"]
+        })
+        connection.commit()
+
+        return jsonify({"message": "Perfil de médico actualizado con éxito"})
+
+    except oracledb.DatabaseError as error:
+        return jsonify({"error": f"Error al actualizar médico: {error}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/paciente/update', methods=['POST'])
+def update_paciente():
+    data = request.json
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        query = """
+            UPDATE PACIENTE
+            SET NOMBRE = :nombre,
+                APELLIDO_PAT = :apellido_pat,
+                APELLIDO_MAT = :apellido_mat,
+                TELEFONO = :telefono,
+                CALLE = :calle,
+                ALCAL_MUN = :alcalMun,
+                COLONIA = :colonia,
+                CP = :cp,
+                ESTADO_ID = (SELECT ESTADO_ID FROM ESTADO WHERE NOMBRE = :estado)
+            WHERE PACIENTE_ID = :paciente_id
+        """
+        cursor.execute(query, {
+            "nombre": data["nombre"],
+            "apellido_pat": data["apellidoPat"],
+            "apellido_mat": data["apellidoMat"],
+            "telefono": data["telefono"],
+            "calle": data["calle"],
+            "alcalMun": data["alcalMun"],
+            "colonia": data["colonia"],
+            "cp": data["cp"],
+            "estado": data["estado"],
+            "paciente_id": data["id"]
+        })
+        connection.commit()
+
+        return jsonify({"message": "Perfil de paciente actualizado con éxito"})
+
+    except oracledb.DatabaseError as error:
+        return jsonify({"error": f"Error al actualizar paciente: {error}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/empleado/update', methods=['POST'])
+def update_empleado():
+    data = request.json
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        query = """
+            UPDATE EMPLEADO
+            SET NOMBRE = :nombre,
+                APELLIDO_PAT = :apellido_pat,
+                APELLIDO_MAT = :apellido_mat,
+                PUESTO_ID = :puesto
+            WHERE EMPLEADO_ID = :empleado_id
+        """
+        cursor.execute(query, {
+            "nombre": data["nombre"],
+            "apellido_pat": data["apellidoPat"],
+            "apellido_mat": data["apellidoMat"],
+            "puesto": data["puesto"],
+            "empleado_id": data["id"]
+        })
+        connection.commit()
+
+        return jsonify({"message": "Perfil de empleado actualizado con éxito"})
+
+    except oracledb.DatabaseError as error:
+        return jsonify({"error": f"Error al actualizar empleado: {error}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/puestos', methods=['GET'])
+def get_puestos():
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Consulta para obtener los puestos
+        query = "SELECT PUESTO_ID, PUESTO FROM PUESTO"
+        cursor.execute(query)
+
+        # Construir la respuesta en formato JSON
+        puestos = [{"PUESTO_ID": row[0], "PUESTO": row[1]} for row in cursor]
+
+        return jsonify(puestos)
+
+    except oracledb.DatabaseError as error:
+        print(f"Error al obtener puestos: {error}")
+        return jsonify({"error": f"Error al obtener puestos: {error}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom"; 
 import "./Header.css";
+
 
 
 
 function Header({username}){
     const [menuOpen, setMenuOpen] = useState(false);
     const [nombreCompleto, setNombreCompleto] = useState("");
+    const navigate = useNavigate(); // Hook para redirigir
 
     useEffect(() => {
         // Obtener el nombre completo del usuario desde localStorage
@@ -23,6 +26,11 @@ function Header({username}){
         localStorage.clear();
         window.location.href = "/";
     };
+
+    const handleConfiguracion = () => {
+        navigate("/configuracion"); // Redirige a la página de configuración
+    };
+
     return(
         <header className="Header">
         <div className="Logo">
@@ -40,7 +48,7 @@ function Header({username}){
             {menuOpen && (
                 <ul className="dropdown-menu">
                     <li>
-                        <button onClick={() => alert("Ir a Configuración")}>
+                        <button onClick={handleConfiguracion}>
                             Configuración
                         </button>
                     </li>

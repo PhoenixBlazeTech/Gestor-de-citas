@@ -1,6 +1,7 @@
 import {useState} from "react";
 import './Login.css'
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Login() {
     const [usuario,setUser] = useState('');
@@ -22,6 +23,7 @@ function Login() {
               // Guardar el nombre completo del usuario en localStorage
             localStorage.setItem("nombreCompleto", data.nombre);
             localStorage.setItem("role", data.rol);
+            localStorage.setItem("userId", data.id);
             // Redirigir según el rol
             if (data.rol === "medico") {
             navigate("/medico");
@@ -31,7 +33,12 @@ function Login() {
             navigate("/empleado");
             }
         } else {
-            alert(data.message || "Error de autenticación");
+            Swal.fire({
+                title: "Autenticación",
+                text: data.message || "Error de autenticación",
+                icon: data.ok ? "success" : "error", // Icono basado en la respuesta
+                confirmButtonText: "Aceptar",
+            });
         }
         } catch (error) {
         console.error("Error:", error);
