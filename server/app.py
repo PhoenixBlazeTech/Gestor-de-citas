@@ -240,6 +240,54 @@ def get_puestos():
         if connection:
             connection.close()
 
+@app.route('/api/Medcon/<medico_id>', methods=['GET'])
+def get_pacientes_por_medico(medico_id):
+    try:
+        # Conexión a la base de datos
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Consulta SQL para filtrar pacientes por médico e incluir FECHA_HORA_CITA
+        query = """
+            SELECT 
+                p.PACIENTE_ID,
+                p.NOMBRE || ' ' || p.APELLIDO_PAT || ' ' || p.APELLIDO_MAT AS NOMBRE_COMPLETO,
+                NVL(c.ESTADO_CITA, 'Sin cita') AS ESTADO_CITA,
+                TO_CHAR(c.FECHA_HORA_CITA, 'YYYY-MM-DD HH24:MI:SS') AS FECHA_HORA_CITA
+            FROM PACIENTE p
+            JOIN CITAS c ON p.PACIENTE_ID = c.PACIENTE_ID
+            WHERE c.MEDICO_ID = :medico_id
+        """
+        cursor.execute(query, {"medico_id": medico_id})
+
+        # Procesar resultados
+        pacientes = [
+            {
+                "id": row[0],
+                "nombre": row[1],
+                "estado": row[2],
+                "fechaHoraCita": row[3]  # Incluyendo la fecha y hora
+            }
+            for row in cursor.fetchall()
+        ]
+
+        # Devolver respuesta en formato JSON
+        return jsonify(pacientes)
+
+    except oracledb.DatabaseError as error:
+        print(f"Error al obtener pacientes: {error}")
+        return jsonify({"error": "Error al obtener pacientes"}), 500
+
+    finally:
+        # Cerrar conexión
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+
+
 
 
 
