@@ -240,8 +240,78 @@ def get_puestos():
         if connection:
             connection.close()
 
+@app.route('/api/compuesto', methods=['GET'])
+def get_compuesto():
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
 
+        # Consulta SQL
+        query = """
+            SELECT m.nombre AS nombre_medicamento, c.nombre AS nombre_compuesto
+            FROM compuesto c
+            JOIN medicamento m USING(medicamento_id)
+        """
+        cursor.execute(query)
 
+        # Transformar los resultados en una lista de diccionarios
+        data = [{"nombre_medicamento": row[0], "nombre_compuesto": row[1]} for row in cursor]
+
+        return jsonify(data)
+
+    except oracledb.DatabaseError as error:
+        return jsonify({"error": f"Error al obtener datos: {error}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/compuesto/delete', methods=['DELETE'])
+def delete_compuesto():
+    try:
+        data = request.json
+        compuesto_id = data.get("compuesto_id")  # Recibir el ID del compuesto a eliminar
+
+        if not compuesto_id:
+            return jsonify({"error": "ID del compuesto no proporcionado"}), 400
+
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Eliminar el registro
+        query = "DELETE FROM compuesto WHERE compuesto_id = :compuesto_id"
+        cursor.execute(query, {"compuesto_id": compuesto_id})
+        connection.commit()
+
+        return jsonify({"message": "Compuesto eliminado con éxito"})
+
+    except oracledb.DatabaseError as error:
+        return jsonify({"error": f"Error al eliminar compuesto: {error}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/medicamentos', methods=['GET'])
+def get_medicamentos():
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+        query = "SELECT MEDICAMENTO_ID, NOMBRE FROM MEDICAMENTO"
+        cursor.execute(query)
+        medicamentos = [{"MEDICAMENTO_ID": row[0], "NOMBRE": row[1]} for row in cursor]
+        return jsonify(medicamentos)
+    except oracledb.Error as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 if __name__ == '__main__':
     app.run(debug=True)

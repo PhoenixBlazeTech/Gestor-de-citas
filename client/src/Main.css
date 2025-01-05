@@ -1,3 +1,9 @@
+.container-forms-empleado{
+    display: flex;
+    flex-direction: row;
+    width: 60%;
+    margin: 0 auto;
+}
 .form-container {
     display: flex;
     flex-direction: column;
@@ -37,4 +43,119 @@
 
 .form-button:hover {
     background-color: #0056b3;
+}
+
+.form-select {
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background-color: white;
+    background-image: linear-gradient(45deg, transparent 50%, #007bff 50%), linear-gradient(135deg, #007bff 50%, transparent 50%);
+    background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    appearance: none; /* Eliminar estilos predeterminados del navegador */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.form-select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 4px rgba(0, 123, 255, 0.6);
+}
+
+.form-select option {
+    color: #333; /* Color del texto de las opciones */
+}
+
+
+/*CSS para las tablas*/
+
+.container-table {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: auto; /* Permite scroll horizontal en tablas grandes */
+}
+
+.data-table {
+    width: 50%;
+    border-collapse: collapse;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.data-table thead {
+    background-color: #003366;
+    color: white;
+}
+
+.data-table th,
+.data-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+
+}
+
+.data-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.data-table tbody tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+.refresh-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.refresh-button:hover {
+    background-color: #0056b3;
+}
+
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.delete-button:hover {
+    background-color: #c82333;
+}
+
+.button-cell {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    text-align: center; 
+}
+
+.container-button{
+    margin-top: 15px;
+}
+
+.date-input{
+    width: 100%;
+    margin-bottom: 10px;
 }
