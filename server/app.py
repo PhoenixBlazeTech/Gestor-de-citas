@@ -286,6 +286,35 @@ def get_pacientes_por_medico(medico_id):
             connection.close()
 
 
+@app.route('/api/pacientes', methods=['GET'])
+def get_pacientes():
+    try:
+        # Conexión a Oracle
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Query para obtener los pacientes
+        query = """
+            SELECT PACIENTE_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO
+            FROM PACIENTE
+        """
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+        # Convertir a formato JSON
+        pacientes = [{"id": row[0], "nombre": row[1]} for row in rows]
+
+        return jsonify(pacientes)
+
+    except oracledb.DatabaseError as error:
+        print(f"Error al obtener pacientes: {error}")
+        return jsonify({"error": "Error al obtener pacientes"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
 
 
 

@@ -15,6 +15,7 @@ function EmpleadoContent() {
             .catch((err) => console.error("Error fetching table data:", err));
     };
 
+
     // Función para cargar los medicamentos
     const fetchMedicamentos = () => {
         fetch("http://localhost:5000/api/medicamentos")
@@ -157,6 +158,7 @@ function EmpleadoContent() {
                         <tr>
                             <th>Medicamento</th>
                             <th>Compuesto</th>
+                            <th id="button-th"></th>
                         </tr>
                     </thead>
                     <tbody>
