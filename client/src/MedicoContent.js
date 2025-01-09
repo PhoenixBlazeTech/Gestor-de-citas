@@ -1,5 +1,5 @@
-import './Main.css';
 import React, { useState, useEffect } from "react";
+import "./Main.css";
 
 function MedicoContent() {
     const [pacientes, setPacientes] = useState([]);
@@ -9,7 +9,7 @@ function MedicoContent() {
         fechaHora: "",
         consultorio: "",
     });
-    const [todosPacientes, setTodosPacientes] = useState([]); /* Todos los pacientes */
+    const [todosPacientes, setTodosPacientes] = useState([]); // Todos los pacientes
 
     // Obtener todos los pacientes
     const fetchTodosPacientes = async () => {
@@ -24,8 +24,8 @@ function MedicoContent() {
             console.error("Error:", error);
             setError("No se pudieron cargar todos los pacientes.");
         }
-    };    
-    
+    };
+
     // Obtener pacientes asignados al médico
     const fetchPacientes = async () => {
         try {
@@ -66,6 +66,11 @@ function MedicoContent() {
             return;
         }
 
+        if (isNaN(new Date(newCita.fechaHora).getTime())) {
+            alert("Por favor, selecciona una fecha y hora válida.");
+            return;
+        }
+
         fetch("http://localhost:5000/api/citas/add", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -81,12 +86,15 @@ function MedicoContent() {
             .then((data) => {
                 alert(data.message || "Cita agendada con éxito.");
                 setNewCita({ paciente: "", fechaHora: "", consultorio: "" });
+                fetchPacientes(); // Refresca la lista de pacientes
             })
             .catch((err) => console.error("Error adding cita:", err));
     };
 
     const handleDiagnosticoClick = (id) => {
         alert(`Accediendo al diagnóstico del paciente con ID: ${id}`);
+        // Aquí puedes redirigir a la página de diagnóstico si usas react-router-dom
+        // window.location.href = `/diagnostico/${id}`;
     };
 
     if (error) {
@@ -94,76 +102,74 @@ function MedicoContent() {
     }
 
     return (
-        <>
-            <div className="content">
-                <form onSubmit={handleAddDate} className="form-container">
-                    <select
-                        name="paciente"
-                        value={newCita.paciente}
-                        onChange={handleInputChange}
-                        className="form-select"
-                        required
-                    >
-                        <option value="">Seleccionar Paciente</option>
-                        {todosPacientes.map((paciente) => (
-                            <option key={paciente.id} value={paciente.id}>
-                                {paciente.nombre}
-                            </option>
-                        ))}
-                    </select>
+        <div className="content">
+            <form onSubmit={handleAddDate} className="form-container">
+                <select
+                    name="paciente"
+                    value={newCita.paciente}
+                    onChange={handleInputChange}
+                    className="form-select"
+                    required
+                >
+                    <option value="">Seleccionar Paciente</option>
+                    {todosPacientes.map((paciente, index) => (
+                        <option key={`${paciente.id}-${index}`} value={paciente.id}>
+                            {paciente.nombre}
+                        </option>
+                    ))}
+                </select>
 
-                    <input
-                        type="datetime-local"
-                        name="fechaHora"
-                        value={newCita.fechaHora}
-                        onChange={handleInputChange}
-                        required
-                        className="form-input"
-                    />
-                    <input
-                        type="text"
-                        name="consultorio"
-                        placeholder="Número de Consultorio"
-                        value={newCita.consultorio}
-                        onChange={handleInputChange}
-                        required
-                        className="form-input"
-                    />
-                    <button type="submit" className="form-button">Agendar</button>
-                </form>
+                <input
+                    type="datetime-local"
+                    name="fechaHora"
+                    value={newCita.fechaHora}
+                    onChange={handleInputChange}
+                    required
+                    className="form-input"
+                />
+                <input
+                    type="text"
+                    name="consultorio"
+                    placeholder="Número de Consultorio"
+                    value={newCita.consultorio}
+                    onChange={handleInputChange}
+                    required
+                    className="form-input"
+                />
+                <button type="submit" className="form-button">Agendar</button>
+            </form>
 
-                <h3 className="title-table">Lista de Pacientes Asignados</h3>
-                <div className="container-table">
-                    <table className="data-table">
-                        <thead>
-                            <tr>
-                                <th>Nombre del Paciente</th>
-                                <th>Estado de la Cita</th>
-                                <th>Fecha y Hora</th>
-                                <th id="button-th"></th>
+            <h3 className="title-table">Lista de Pacientes Asignados</h3>
+            <div className="container-table">
+                <table className="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre del Paciente</th>
+                            <th>Estado de la Cita</th>
+                            <th>Fecha y Hora</th>
+                            <th id="button-th"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {pacientes.map((paciente, index) => (
+                            <tr key={`${paciente.id}-${index}`}>
+                                <td>{paciente.nombre}</td>
+                                <td>{paciente.estado}</td>
+                                <td>{paciente.fechaHoraCita || "No asignada"}</td>
+                                <td className="button-cell">
+                                    <button
+                                        onClick={() => handleDiagnosticoClick(paciente.id)}
+                                        className="delete-button"
+                                    >
+                                        Diagnóstico
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            {pacientes.map((paciente) => (
-                                <tr key={paciente.id}>
-                                    <td>{paciente.nombre}</td>
-                                    <td>{paciente.estado}</td>
-                                    <td>{paciente.fechaHoraCita || 'No asignada'}</td>
-                                    <td className="button-cell">
-                                        <button
-                                            onClick={() => handleDiagnosticoClick(paciente.id)}
-                                            className="delete-button"
-                                        >
-                                            Diagnóstico
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
+                        ))}
+                    </tbody>
+                </table>
             </div>
-        </>
+        </div>
     );
 }
 
