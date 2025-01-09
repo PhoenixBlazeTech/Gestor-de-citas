@@ -6,6 +6,8 @@ import Paciente from "./paciente";
 import Empleado from "./Empleado";
 import Configuracion from "./Configuracion"; // Importa el componente de configuración
 import Main from "./Main";
+import DiagnosticoPage from './DiagnosticoPage';
+
 
 function App() {
   return (
@@ -25,6 +27,7 @@ function App() {
           <Route path="/empleado" element={<Empleado />} />
           <Route path="/" element={<Main />} />
           <Route path="/configuracion" element={<Configuracion />} />
+          <Route path="/diagnostico/:id" element={<DiagnosticoPage />} />
         </Routes>
       </BrowserRouter>
     </div>
