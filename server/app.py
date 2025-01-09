@@ -325,16 +325,23 @@ def get_compuesto():
         connection = oracledb.connect(user=username, password=password, dsn=dsn)
         cursor = connection.cursor()
 
-        # Consulta SQL
+        # Consulta SQL actualizada
         query = """
-            SELECT m.nombre AS nombre_medicamento, c.nombre AS nombre_compuesto
+            SELECT c.comp_id AS compuesto_id, c.nombre AS nombre_compuesto, m.nombre AS nombre_medicamento
             FROM compuesto c
             JOIN medicamento m USING(medicamento_id)
         """
         cursor.execute(query)
 
         # Transformar los resultados en una lista de diccionarios
-        data = [{"nombre_medicamento": row[0], "nombre_compuesto": row[1]} for row in cursor]
+        data = [
+            {
+                "compuesto_id": row[0],
+                "nombre_compuesto": row[1],
+                "nombre_medicamento": row[2]
+            }
+            for row in cursor
+        ]
 
         return jsonify(data)
 
@@ -347,33 +354,7 @@ def get_compuesto():
         if connection:
             connection.close()
 
-@app.route('/api/compuesto/delete', methods=['DELETE'])
-def delete_compuesto():
-    try:
-        data = request.json
-        compuesto_id = data.get("compuesto_id")  # Recibir el ID del compuesto a eliminar
 
-        if not compuesto_id:
-            return jsonify({"error": "ID del compuesto no proporcionado"}), 400
-
-        connection = oracledb.connect(user=username, password=password, dsn=dsn)
-        cursor = connection.cursor()
-
-        # Eliminar el registro
-        query = "DELETE FROM compuesto WHERE compuesto_id = :compuesto_id"
-        cursor.execute(query, {"compuesto_id": compuesto_id})
-        connection.commit()
-
-        return jsonify({"message": "Compuesto eliminado con éxito"})
-
-    except oracledb.DatabaseError as error:
-        return jsonify({"error": f"Error al eliminar compuesto: {error}"}), 500
-
-    finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
 
 @app.route('/api/medicamentos', methods=['GET'])
 def get_medicamentos():
@@ -386,6 +367,297 @@ def get_medicamentos():
         return jsonify(medicamentos)
     except oracledb.Error as e:
         return jsonify({"error": str(e)}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/medicamento/add', methods=['POST'])
+def add_medicamento():
+    try:
+        # Obtener los datos del cuerpo de la solicitud
+        data = request.json
+        nombre = data.get("nombre")
+
+        if not nombre:
+            return jsonify({"error": "El campo 'nombre' es obligatorio."}), 400
+
+        # Conexión a la base de datos
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Insertar el nuevo medicamento (el ID lo genera el trigger automáticamente)
+        query = "INSERT INTO MEDICAMENTO (NOMBRE) VALUES (:nombre)"
+        cursor.execute(query, [nombre])
+        connection.commit()
+
+        return jsonify({"message": "Medicamento agregado con éxito."})
+
+    except oracledb.Error as e:
+        print(f"Error al insertar medicamento: {e}")
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+            
+@app.route('/api/compuesto/add', methods=['POST'])
+def add_compuesto():
+    try:
+        # Obtener los datos del cuerpo de la solicitud
+        data = request.json
+        medicamento_id = data.get("medicamento")
+        nombre_compuesto = data.get("compuesto")
+
+        if not medicamento_id or not nombre_compuesto:
+            return jsonify({"error": "Los campos 'medicamento' y 'compuesto' son obligatorios."}), 400
+
+        # Conexión a la base de datos
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Insertar el nuevo compuesto (el ID lo genera el trigger automáticamente)
+        query = """
+            INSERT INTO COMPUESTO (MEDICAMENTO_ID, NOMBRE)
+            VALUES (:medicamento_id, :nombre_compuesto)
+        """
+        cursor.execute(query, [medicamento_id, nombre_compuesto])
+        connection.commit()
+
+        return jsonify({"message": "Compuesto agregado con éxito."})
+
+    except oracledb.Error as e:
+        print(f"Error al insertar compuesto: {e}")
+        return jsonify({"error": str(e)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/medicamento/delete', methods=['DELETE'])
+def delete_medicamento():
+    try:
+        data = request.get_json()
+        medicamento_id = data.get("medicamento_id")
+        
+        if not medicamento_id:
+            return jsonify({"error": "El ID del medicamento es obligatorio"}), 400
+        
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+        query = "DELETE FROM MEDICAMENTO WHERE MEDICAMENTO_ID = :id"
+        cursor.execute(query, {"id": medicamento_id})
+        connection.commit()
+        
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Medicamento no encontrado"}), 404
+        
+        return jsonify({"message": "Medicamento eliminado con éxito"}), 200
+    except oracledb.Error as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/compuesto/delete', methods=['DELETE'])
+def delete_compuesto():
+    try:
+        # Obtener los datos del cuerpo de la solicitud
+        data = request.get_json()
+        print("Datos recibidos:", data)  # Log para verificar datos
+        compuesto_id = data.get('compuesto_id')
+
+        if not compuesto_id:
+            print("Error: No se proporcionó el compuesto_id")
+            return jsonify({"error": "El ID del compuesto es requerido"}), 400
+
+        # Conectar a la base de datos
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Verificar si el compuesto existe antes de eliminar
+        verify_query = "SELECT COUNT(*) FROM COMPUESTO WHERE COMP_ID = :compuesto_id"
+        cursor.execute(verify_query, [compuesto_id])
+        exists = cursor.fetchone()[0]
+        print("El compuesto existe:", exists)
+
+        if not exists:
+            print("Error: El compuesto no existe")
+            return jsonify({"error": "El compuesto no existe"}), 404
+
+        # Eliminar el compuesto
+        delete_query = "DELETE FROM COMPUESTO WHERE COMP_ID = :compuesto_id"
+        cursor.execute(delete_query, [compuesto_id])
+        connection.commit()
+        print("Compuesto eliminado con éxito")
+
+        return jsonify({"message": "Compuesto eliminado con éxito."})
+
+    except oracledb.DatabaseError as error:
+        print("Error en la base de datos:", error)
+        return jsonify({"error": f"Error al eliminar el compuesto: {error}"}), 500
+
+    finally:
+        if 'cursor' in locals() and cursor:
+            cursor.close()
+        if 'connection' in locals() and connection:
+            connection.close()
+
+@app.route('/api/citas/add', methods=['POST'])
+def add_cita():
+    try:
+        data = request.json
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Insertar los datos
+        query = """
+            INSERT INTO CITAS (FECHA_HORA_CITA, ESTADO_CITA, NUM_CONSULTORIO, PACIENTE_ID, MEDICO_ID)
+            VALUES (TO_TIMESTAMP(:fecha_hora, 'YYYY-MM-DD"T"HH24:MI:SS'), :estado_cita, :num_consultorio, :paciente_id, :medico_id)
+        """
+        cursor.execute(query, {
+            'fecha_hora': data['fecha_hora'],
+            'estado_cita': data['estado_cita'],  # Valor predeterminado, por ejemplo 'A'
+            'num_consultorio': data['num_consultorio'],
+            'paciente_id': data['paciente_id'],
+            'medico_id': data['medico_id']
+        })
+        connection.commit()
+
+        return jsonify({"message": "Cita creada exitosamente."}), 201
+
+    except oracledb.DatabaseError as error:
+        return jsonify({"error": f"Error en la base de datos: {error}"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/paciecon/<paciente_id>', methods=['GET'])
+def get_citas_por_paciente(paciente_id):
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        query = """
+            SELECT 
+                c.CITAS_ID,  -- Incluir el ID de la cita
+                TO_CHAR(c.FECHA_HORA_CITA, 'YYYY-MM-DD HH24:MI:SS') AS FECHA_HORA_CITA,
+                c.ESTADO_CITA,
+                m.NOMBRE || ' ' || m.APELLIDO_PAT || ' ' || m.APELLIDO_MAT AS MEDICO_NOMBRE
+            FROM CITAS c
+            JOIN MEDICO m ON c.MEDICO_ID = m.MEDICO_ID
+            WHERE c.PACIENTE_ID = :paciente_id
+        """
+        cursor.execute(query, {"paciente_id": paciente_id})
+        citas = [
+            {
+                "id": row[0],  # Asegúrate de usar "id" aquí
+                "fechaHora": row[1],
+                "estado": row[2],
+                "medico": row[3]
+            }
+            for row in cursor.fetchall()
+        ]
+        return jsonify(citas)
+
+    except oracledb.DatabaseError as error:
+        print(f"Error al obtener citas: {error}")
+        return jsonify({"error": "Error al obtener citas"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+
+@app.route('/api/citas/cancelar', methods=['POST'])
+def cancelar_cita():
+    data = request.json  # Recibir el cuerpo de la solicitud
+    print(f"Datos recibidos en el servidor: {data}")  # Agregar este print
+    
+    cita_id = data.get("cita_id")  # Obtener el ID de la cita
+
+    if not cita_id:
+        return jsonify({"error": "ID de la cita no proporcionado"}), 400
+
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Actualizar el estado de la cita
+        query = "UPDATE CITAS SET ESTADO_CITA = 'C' WHERE CITAS_ID = :cita_id"
+        cursor.execute(query, {"cita_id": cita_id})
+        connection.commit()
+
+        # Verificar si se actualizó alguna fila
+        if cursor.rowcount > 0:
+            return jsonify({"message": "Cita cancelada con éxito"})
+        else:
+            return jsonify({"error": "No se encontró la cita con el ID proporcionado"}), 404
+
+    except oracledb.DatabaseError as error:
+        print(f"Error al cancelar cita: {error}")
+        return jsonify({"error": "Error al cancelar cita"}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+
+@app.route('/api/historial/<paciente_id>', methods=['GET'])
+def get_historial_medico(paciente_id):
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        query = """
+            SELECT 
+                TO_CHAR(C.FECHA_HORA_CITA, 'YYYY-MM-DD HH24:MI:SS') AS FECHA_HORA_CITA,
+                C.ESTADO_CITA,
+                C.NUM_CONSULTORIO,
+                D.DIAGNOSTICO,
+                R.PERIODICIDAD AS RECETA,
+                M.NOMBRE AS MEDICAMENTO
+            FROM PACIENTE P
+            JOIN CITAS C ON P.PACIENTE_ID = C.PACIENTE_ID   
+            JOIN DIAGNOSTICO D ON C.CITAS_ID = D.CITAS_ID    
+            JOIN RECETA R ON D.DIAGNOSTICO_ID = R.DIAGNOSTICO_ID 
+            JOIN MEDICAMENTO M ON R.MEDICAMENTO_ID = M.MEDICAMENTO_ID 
+            WHERE P.PACIENTE_ID = :paciente_id
+            ORDER BY C.FECHA_HORA_CITA DESC
+        """
+        cursor.execute(query, {"paciente_id": paciente_id})
+        historial = [
+            {
+                "fechaHora": row[0],
+                "estado": row[1],
+                "consultorio": row[2],
+                "diagnostico": row[3],
+                "receta": row[4],
+                "medicamento": row[5],
+            }
+            for row in cursor.fetchall()
+        ]
+        return jsonify(historial)
+
+    except oracledb.DatabaseError as error:
+        print(f"Error al obtener historial médico: {error}")
+        return jsonify({"error": "Error al obtener historial médico"}), 500
+
     finally:
         if cursor:
             cursor.close()
