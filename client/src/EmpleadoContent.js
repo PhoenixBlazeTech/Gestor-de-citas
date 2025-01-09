@@ -89,16 +89,33 @@ function EmpleadoContent() {
         fetch("http://localhost:5000/api/compuesto/delete", {
             method: "DELETE",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ compuesto_id: compuestoId }),
+            body: JSON.stringify({ compuesto_id: compuestoId }), // Asegúrate de que compuesto_id se envía correctamente
         })
             .then((res) => res.json())
             .then((data) => {
+                console.log("Respuesta del backend:", data); // Verifica la respuesta
                 alert(data.message || "Compuesto eliminado con éxito.");
                 fetchTableData();
             })
             .catch((err) => console.error("Error deleting compuesto:", err));
     };
+    
 
+    const handleDeleteMedicamento = (medicamentoId) => {
+
+        fetch("http://localhost:5000/api/medicamento/delete", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ medicamento_id: medicamentoId }),
+        })
+            .then((res) => res.json())
+            .then((data) => {
+                alert(data.message || "Medicamento eliminado con éxito.");
+                fetchMedicamentos(); // Actualiza la lista de medicamentos
+            })
+            .catch((err) => console.error("Error deleting medicamento:", err));
+    };
+    
     return (
         <>
             <div className="container-forms-empleado">
@@ -150,7 +167,7 @@ function EmpleadoContent() {
                     </form>
                 </div>
             </div>
-
+            <h2>Lista de compuestos</h2>
             {/* Tabla */}
             <div className="container-table">
                 <table className="data-table">
@@ -169,6 +186,31 @@ function EmpleadoContent() {
                                 <td className="button-cell">
                                     <button
                                         onClick={() => handleDeleteCompuesto(row.compuesto_id)}
+                                        className="delete-button"
+                                    >
+                                        Eliminar
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+            <h2>Lista de Medicamentos</h2>
+            <div className="container-table">
+                <table className="data-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {medicamentos.map((med) => (
+                            <tr key={med.MEDICAMENTO_ID}>
+                                <td>{med.NOMBRE}</td>
+                                <td className="button-cell">
+                                    <button
+                                        onClick={() => handleDeleteMedicamento(med.MEDICAMENTO_ID)}
                                         className="delete-button"
                                     >
                                         Eliminar
