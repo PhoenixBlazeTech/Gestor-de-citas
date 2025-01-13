@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Main.css";
+import { useNavigate } from "react-router-dom";
 
 function MedicoContent() {
     const [pacientes, setPacientes] = useState([]);
@@ -9,6 +10,7 @@ function MedicoContent() {
         fechaHora: "",
         consultorio: "",
     });
+    const navigate = useNavigate();
     const [todosPacientes, setTodosPacientes] = useState([]); // Todos los pacientes
 
     // Obtener todos los pacientes
@@ -91,10 +93,8 @@ function MedicoContent() {
             .catch((err) => console.error("Error adding cita:", err));
     };
 
-    const handleDiagnosticoClick = (id) => {
-        alert(`Accediendo al diagnóstico del paciente con ID: ${id}`);
-        // Aquí puedes redirigir a la página de diagnóstico si usas react-router-dom
-        // window.location.href = `/diagnostico/${id}`;
+    const handleDiagnosticoClick = (citaId, pacienteId) => {
+        navigate(`/diagnostico/${citaId}/${pacienteId}`); // Pasar citaId y pacienteId en la URL
     };
 
     if (error) {
@@ -158,7 +158,7 @@ function MedicoContent() {
                                 <td>{paciente.fechaHoraCita || "No asignada"}</td>
                                 <td className="button-cell">
                                     <button
-                                        onClick={() => handleDiagnosticoClick(paciente.id)}
+                                        onClick={() => handleDiagnosticoClick(paciente.cita_id, paciente.id)} 
                                         className="delete-button"
                                     >
                                         Diagnóstico
