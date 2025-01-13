@@ -253,7 +253,8 @@ def get_pacientes_por_medico(medico_id):
                 p.PACIENTE_ID,
                 p.NOMBRE || ' ' || p.APELLIDO_PAT || ' ' || p.APELLIDO_MAT AS NOMBRE_COMPLETO,
                 NVL(c.ESTADO_CITA, 'Sin cita') AS ESTADO_CITA,
-                TO_CHAR(c.FECHA_HORA_CITA, 'YYYY-MM-DD HH24:MI:SS') AS FECHA_HORA_CITA
+                TO_CHAR(c.FECHA_HORA_CITA, 'YYYY-MM-DD HH24:MI:SS') AS FECHA_HORA_CITA,
+                CITAS_ID
             FROM PACIENTE p
             JOIN CITAS c ON p.PACIENTE_ID = c.PACIENTE_ID
             WHERE c.MEDICO_ID = :medico_id
@@ -266,7 +267,8 @@ def get_pacientes_por_medico(medico_id):
                 "id": row[0],
                 "nombre": row[1],
                 "estado": row[2],
-                "fechaHoraCita": row[3]  # Incluyendo la fecha y hora
+                "fechaHoraCita": row[3], # Incluyendo la fecha y hora
+                "cita_id": row[4]
             }
             for row in cursor.fetchall()
         ]
@@ -663,6 +665,192 @@ def get_historial_medico(paciente_id):
             cursor.close()
         if connection:
             connection.close()
+
+@app.route('/api/pacientes/<id>', methods=['GET'])
+def get_paciente(id):
+    try:
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Consulta SQL para obtener el nombre completo del paciente
+        query = """
+            SELECT NOMBRE, APELLIDO_PAT, APELLIDO_MAT
+            FROM PACIENTE
+            WHERE PACIENTE_ID = :id
+        """
+        cursor.execute(query, [id])
+        row = cursor.fetchone()
+
+        if row:
+            # Concatenar el nombre completo
+            nombre_completo = f"{row[0]} {row[1]} {row[2]}"
+            return jsonify({"nombre_completo": nombre_completo})
+        else:
+            return jsonify({"error": "Paciente no encontrado"}), 404
+
+    except oracledb.DatabaseError as error:
+        return jsonify({"error": str(error)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/padecimientos/add', methods=['POST'])
+def add_padecimiento_and_associate():
+    try:
+        data = request.get_json()
+        padecimiento = data.get("padecimiento")
+        paciente_id = data.get("paciente_id")
+        observacion = data.get("observacion", "Sin observación")
+
+        # Validaciones
+        if not padecimiento or len(padecimiento) > 20:
+            return jsonify({"error": "Padecimiento inválido o demasiado largo"}), 400
+        if not paciente_id:
+            return jsonify({"error": "Paciente ID no proporcionado"}), 400
+        if len(observacion) > 33:
+            return jsonify({"error": "Observación demasiado larga"}), 400
+
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Insertar en PADECIMIENTO (el trigger genera automáticamente el ID)
+        cursor.execute(
+            "INSERT INTO PADECIMIENTO (PADECIMIENTO) VALUES (:padecimiento)",
+            {"padecimiento": padecimiento},
+        )
+
+        # Obtener el ID generado automáticamente por el trigger
+        cursor.execute("SELECT 'PA' || LPAD(SEQ_PADECIMIENTO_ID.CURRVAL, 2, '0') FROM DUAL")
+        nuevo_padecimiento_id = cursor.fetchone()[0]
+
+        # Asociar con PACIENTE_PADECIMIENTO
+        cursor.execute(
+            "INSERT INTO PACIENTE_PADECIMIENTO (PACIENTE_ID, PADECIMIENTO_ID, OBSERVACION) "
+            "VALUES (:paciente_id, :padecimiento_id, :observacion)",
+            {
+                "paciente_id": paciente_id,
+                "padecimiento_id": nuevo_padecimiento_id,
+                "observacion": observacion,
+            },
+        )
+
+        connection.commit()
+
+        return jsonify({"message": "Padecimiento creado y asociado con éxito"}), 201
+
+    except oracledb.DatabaseError as error:
+        return jsonify({"error": str(error)}), 500
+
+    finally:
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/diagnostico/add', methods=['POST'])
+def add_diagnostico():
+    try:
+        # Obtener los datos del request
+        data = request.get_json()
+        citas_id = data.get('citas_id')
+        diagnostico = data.get('diagnostico')
+
+        # Validar los datos
+        if not citas_id or not diagnostico:
+            return jsonify({"error": "Faltan datos obligatorios"}), 400
+
+        if len(diagnostico) > 600:
+            return jsonify({"error": "El diagnóstico no puede exceder los 600 caracteres"}), 400
+
+        # Conexión a la base de datos
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Insertar en la tabla DIAGNOSTICO (el trigger generará el DIAGNOSTICO_ID automáticamente)
+        cursor.execute("""
+            INSERT INTO DIAGNOSTICO (DIAGNOSTICO, CITAS_ID) 
+            VALUES (:diagnostico, :citas_id)
+        """, {
+            "diagnostico": diagnostico,
+            "citas_id": citas_id
+        })
+
+        # Obtener el ID generado por el trigger
+        cursor.execute("SELECT 'DI' || LPAD(SEQ_DIAGNOSTICO_ID.CURRVAL, 2, '0') FROM DUAL")
+        nuevo_diagnostico_id = cursor.fetchone()[0]
+
+        # Confirmar los cambios
+        connection.commit()
+
+        # Devolver respuesta exitosa con el ID generado
+        return jsonify({
+            "message": "Diagnóstico agregado con éxito",
+            "diagnostico_id": nuevo_diagnostico_id
+        }), 201
+
+    except oracledb.Error as e:
+        # Manejo de errores en la base de datos
+        print(f"Error al agregar diagnóstico: {str(e)}")
+        return jsonify({"error": "Error al agregar diagnóstico"}), 500
+
+    finally:
+        # Cerrar conexiones
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
+@app.route('/api/receta/add', methods=['POST'])
+def add_receta():
+    try:
+        # Obtener los datos del request
+        data = request.get_json()
+        diagnostico_id = data.get('diagnostico_id')
+        medicamento_id = data.get('medicamento_id')
+        periodicidad = data.get('periodicidad')
+
+        # Validar los datos
+        if not diagnostico_id or not medicamento_id or not periodicidad:
+            return jsonify({"error": "Faltan datos obligatorios"}), 400
+
+        if len(periodicidad) > 25:
+            return jsonify({"error": "La periodicidad no puede exceder los 25 caracteres"}), 400
+
+        # Conexión a la base de datos
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
+        cursor = connection.cursor()
+
+        # Insertar en la tabla RECETA
+        cursor.execute("""
+            INSERT INTO RECETA (DIAGNOSTICO_ID, MEDICAMENTO_ID, PERIODICIDAD) 
+            VALUES (:diagnostico_id, :medicamento_id, :periodicidad)
+        """, {
+            "diagnostico_id": diagnostico_id,
+            "medicamento_id": medicamento_id,
+            "periodicidad": periodicidad
+        })
+
+        # Confirmar los cambios
+        connection.commit()
+
+        # Devolver respuesta exitosa
+        return jsonify({"message": "Receta agregada con éxito"}), 201
+
+    except oracledb.Error as e:
+        # Manejo de errores en la base de datos
+        print(f"Error al agregar receta: {str(e)}")
+        return jsonify({"error": "Error al agregar receta"}), 500
+
+    finally:
+        # Cerrar conexiones
+        if cursor:
+            cursor.close()
+        if connection:
+            connection.close()
+
 
 if __name__ == '__main__':
     app.run(debug=True)
