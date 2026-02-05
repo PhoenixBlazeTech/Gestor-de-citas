@@ -1,5 +1,11 @@
 .App {
-  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface-muted);
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 

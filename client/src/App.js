@@ -4,9 +4,9 @@ import Login from "./login";
 import Medico from "./Medico";
 import Paciente from "./paciente";
 import Empleado from "./Empleado";
-import Configuracion from "./Configuracion"; // Importa el componente de configuración
-import Main from "./Main";
-import DiagnosticoPage from './DiagnosticoPage';
+import Configuracion from "./Configuracion";
+import DiagnosticoPage from "./DiagnosticoPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 
 function App() {
@@ -14,20 +14,17 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <Routes>
-          {/* Ruta del Login */}
+          {/* Login público */}
           <Route path="/" element={<Login />} />
 
-          {/* Ruta para Medico */}
-          <Route path="/medico" element={<Medico />} />
-
-          {/* Ruta para Paciente */}
-          <Route path="/paciente" element={<Paciente />} />
-
-          {/* Ruta para Empleado */}
-          <Route path="/empleado" element={<Empleado />} />
-          <Route path="/" element={<Main />} />
-          <Route path="/configuracion" element={<Configuracion />} />
-          <Route path="/diagnostico/:citaId/:pacienteId" element={<DiagnosticoPage />} />
+          {/* Rutas protegidas: requieren usuario autenticado */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/medico" element={<Medico />} />
+            <Route path="/paciente" element={<Paciente />} />
+            <Route path="/empleado" element={<Empleado />} />
+            <Route path="/configuracion" element={<Configuracion />} />
+            <Route path="/diagnostico/:citaId/:pacienteId" element={<DiagnosticoPage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
