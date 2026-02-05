@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS  # Importar Flask-CORS
-import oracledb  # Cambiado de cx_Oracle a oracledb
+from werkzeug.security import generate_password_hash, check_password_hash
+import oracledb
 
 app = Flask(__name__)
 CORS(app)  # Habilitar CORS para todas las rutas
@@ -10,8 +11,13 @@ username = "usr_citas"
 password = "citapass"
 dsn = "localhost:1521/xepdb1"
 
-# Configuración para oracledb
-oracledb.init_oracle_client()  # Asegúrate de que Oracle Instant Client esté configurado
+# Configuración para python-oracledb
+try:
+    oracledb.init_oracle_client()  # Inicializar el cliente Oracle
+except Exception as e:
+    print(f"Error al inicializar Oracle client: {e}")
+    # En modo thin, no es necesario el cliente Oracle
+    pass
 
 @app.route('/')
 def home():
@@ -32,38 +38,38 @@ def login():
 
         # Verificar en la tabla MEDICO
         query_medico = """
-            SELECT MEDICO_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO
+            SELECT MEDICO_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO, CONTRASENIA
             FROM MEDICO
-            WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia
+            WHERE USUARIO = :usuario
         """
-        cursor.execute(query_medico, usuario=usuario, contrasenia=contrasenia)
+        cursor.execute(query_medico, usuario=usuario)
         medico = cursor.fetchone()
-        if medico:
+        if medico and check_password_hash(medico[2], contrasenia):
             return jsonify({"ok": True, "rol": "medico", "id": medico[0], "nombre": medico[1]})
 
         # Verificar en la tabla PACIENTE
         query_paciente = """
-            SELECT PACIENTE_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO
+            SELECT PACIENTE_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO, CONTRASENIA
             FROM PACIENTE
-            WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia
+            WHERE USUARIO = :usuario
         """
-        cursor.execute(query_paciente, usuario=usuario, contrasenia=contrasenia)
+        cursor.execute(query_paciente, usuario=usuario)
         paciente = cursor.fetchone()
-        if paciente:
+        if paciente and check_password_hash(paciente[2], contrasenia):
             return jsonify({"ok": True, "rol": "paciente", "id": paciente[0], "nombre": paciente[1]})
 
         # Verificar en la tabla EMPLEADO
         query_empleado = """
-            SELECT EMPLEADO_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO
+            SELECT EMPLEADO_ID, NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO, CONTRASENIA
             FROM EMPLEADO
-            WHERE USUARIO = :usuario AND CONTRASENIA = :contrasenia
+            WHERE USUARIO = :usuario
         """
-        cursor.execute(query_empleado, usuario=usuario, contrasenia=contrasenia)
+        cursor.execute(query_empleado, usuario=usuario)
         empleado = cursor.fetchone()
-        if empleado:
+        if empleado and check_password_hash(empleado[2], contrasenia):
             return jsonify({"ok": True, "rol": "empleado", "id": empleado[0], "nombre": empleado[1]})
 
-        # Si no se encuentra en ninguna tabla
+        # Si no se encuentra en ninguna tabla o las contraseñas no coinciden
         return jsonify({"ok": False, "message": "Credenciales incorrectas"}), 401
 
     except oracledb.DatabaseError as error:
