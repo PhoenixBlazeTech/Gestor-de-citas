@@ -45,18 +45,35 @@ function Login() {
         alert("Error al conectar con el servidor");
     }
     };
+
     return (
-    <div className="Content">
-        <h1>CitaCare</h1>
-        <div className="Container_log">
-            <h2>Inicio de Sesion</h2>
-            <form onSubmit={handleSubmit}>
-                <input id="user" type="text" name="user" placeholder="Usuario" value={usuario} onChange={(e) => setUser(e.target.value)}/>
-                <input type="password" name="password" placeholder="Contraseña" value={contrasenia} onChange={(e) => setPassword(e.target.value)}/>
-                <button type="submit">Iniciar Sesion</button>
-            </form>
+        <div className="login-page">
+            <div className="login-background" />
+            <div className="login-content">
+                <h1 className="login-logo">citaCare</h1>
+                <div className="login-card">
+                    <h2 className="login-title">Inicio de Sesión</h2>
+                    <form onSubmit={handleSubmit} className="login-form">
+                        <input
+                            id="user"
+                            type="text"
+                            name="user"
+                            placeholder="Usuario"
+                            value={usuario}
+                            onChange={(e) => setUser(e.target.value)}
+                        />
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Contraseña"
+                            value={contrasenia}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <button type="submit">Iniciar Sesión</button>
+                    </form>
+                </div>
+            </div>
         </div>
-    </div>
     );
 }
 

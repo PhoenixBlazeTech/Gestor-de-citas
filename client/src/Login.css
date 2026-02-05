@@ -1,123 +1,184 @@
-/* General Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-  
-  .Content{
-    font-family: Arial, sans-serif;
-    background-color: #f0f2f5; /* Fondo similar al login de Facebook */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100%;
-    flex-direction: column;
-  }
-  
-  /* Contenedor principal del formulario */
-  .Container_log {
-    background-color: #ffffff; /* Fondo blanco del formulario */
-    padding: 30px 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    width: 100%;
-    max-width: 400px;
-    display: flex;
-    flex-direction: column; /* Alinear elementos verticalmente */
-    align-items: center; /* Centrar los elementos horizontalmente */
-    gap: 15px; /* Espaciado entre los elementos */
-}
-  /* Título */
-h1 {
-    font-size: 32px;
-    color: #1877f2; /* Azul de Facebook */
-    font-weight: bold;
-    text-transform: lowercase;
-}
-  /* Campos de entrada */
-input[type="text"],
-input[type="password"] {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #dddfe2; /* Borde gris claro */
-    border-radius: 6px;
-    font-size: 14px;
-    margin-bottom: 10px;
-  }
-  
-input[type="text"]:focus,
-input[type="password"]:focus {
-    outline: none;
-    border-color: #1877f2; /* Azul al enfocar */
-    box-shadow: 0 0 4px rgba(24, 119, 242, 0.4); /* Sombra azul clara */
-  }
-  
-  /* Botón de inicio de sesión */
-button[type="submit"] {
-    width: 100%;
-    padding: 12px;
-    background-color: #1877f2; /* Azul Facebook */
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
+/* Reset muy ligero solo dentro del login */
+.login-page *,
+.login-page *::before,
+.login-page *::after {
+  box-sizing: border-box;
 }
 
-button[type="submit"]:hover {
-    background-color: #165ec9; /* Azul más oscuro al pasar el mouse */
+.login-page {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(circle at top, var(--color-primary-soft) 0, #f4f6fb 40%, #eef1f7 100%);
+}
+
+/* Fondo animado suave */
+.login-background {
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at 10% 20%, rgba(24, 119, 242, 0.15) 0, transparent 55%),
+    radial-gradient(circle at 80% 80%, rgba(66, 183, 255, 0.18) 0, transparent 60%);
+  filter: blur(4px);
+  animation: float-bg 18s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes float-bg {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
   }
-  
-  /* Enlace de olvidaste tu cuenta */
-  a {
-    font-size: 14px;
-    color: #1877f2; /* Azul de Facebook */
-    text-decoration: none;
+  to {
+    transform: translate3d(-12px, -18px, 0) scale(1.03);
   }
-  
-  a:hover {
-    text-decoration: underline;
+}
+
+.login-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+.login-logo {
+  font-size: 34px;
+  color: var(--color-primary);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  animation: logo-pop 550ms ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes logo-pop {
+  0% {
+    transform: translateY(-12px) scale(0.96);
+    opacity: 0;
   }
-  
-  /* Botón de crear cuenta */
-  button.create-account {
-    width: 100%;
-    padding: 12px;
-    background-color: #42b72a; /* Verde Facebook */
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  60% {
+    transform: translateY(2px) scale(1.02);
+    opacity: 1;
   }
-  
-  button.create-account:hover {
-    background-color: #36a420; /* Verde más oscuro */
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
   }
-  
-  /* Responsivo */
-  @media (max-width: 500px) {
-    .Container_log {
-      padding: 20px 30px;
-    }
-  
-    h1 {
-      font-size: 28px;
-    }
-  
-    input[type="text"],
-    input[type="password"] {
-      font-size: 13px;
-    }
-  
-    button {
-      font-size: 14px;
-    }
+}
+
+.login-card {
+  background-color: var(--color-surface);
+  padding: 32px 40px;
+  border-radius: 18px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow:
+    var(--shadow-strong),
+    0 0 0 1px rgba(148, 163, 184, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  backdrop-filter: blur(10px);
+  animation: card-in 680ms cubic-bezier(0.2, 0.75, 0.25, 1.05) forwards;
+  opacity: 0;
+  transform-origin: center;
+}
+
+@keyframes card-in {
+  0% {
+    transform: translateY(22px) scale(0.96);
+    opacity: 0;
   }
+  60% {
+    transform: translateY(-4px) scale(1.01);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.login-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--color-text-main);
+  text-align: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 10px;
+  border: 1px solid #d2d6e0;
+  font-size: 14px;
+  transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.16s ease;
+  background-color: #f9fafb;
+}
+
+.login-form input::placeholder {
+  color: #9ca3af;
+}
+
+.login-form input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px rgba(24, 119, 242, 0.35), 0 10px 22px rgba(59, 130, 246, 0.18);
+  background-color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.login-form button[type="submit"] {
+  margin-top: 4px;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, var(--color-primary), #2563eb);
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-shadow: 0 14px 30px rgba(37, 99, 235, 0.35);
+  transition: transform 0.16s ease-out, box-shadow 0.2s ease-out, filter 0.2s ease-out;
+}
+
+.login-form button[type="submit"]:hover {
+  transform: translateY(-1px) scale(1.01);
+  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.45);
+  filter: brightness(1.04);
+}
+
+.login-form button[type="submit"]:active {
+  transform: translateY(1px) scale(0.99);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .login-card {
+    padding: 24px 18px;
+    margin: 0 14px;
+  }
+
+  .login-logo {
+    font-size: 28px;
+  }
+}
   

@@ -1,12 +1,17 @@
 
 .Header {
-    display: flex;
-    justify-content: space-between; 
-    align-items: center;
-    padding: 10px 20px;
-    background-color: #f8f9fa;
-    border-bottom: 1px solid #e9ecef;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 44px;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-subtle);
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .user-menu {
@@ -14,41 +19,51 @@
 }
 
 .user-button {
-    display: flex;
-    align-items: center;
-    background-color: #003366;
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 10px 15px;
-    font-size: 14px;
-    cursor: pointer;
-  }
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-surface);
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: none;
+  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
   
   .user-button .dropdown-arrow {
     margin-left: 8px;
   }
   
   .user-button:hover {
-    background-color: #002244;
+    background-color: var(--color-primary-soft);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+
+  .user-button.is-open {
+    background-color: var(--color-primary-soft);
+    border-color: var(--color-primary);
   }
   
   .dropdown-menu {
     position: absolute;
-    top: 100%;
+    top: 110%;
     right: 0;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft);
     list-style: none;
-    padding: 0;
-    margin: 5px 0;
-    width: 150px;
+    padding: 4px 0;
+    margin: 6px 0;
+    width: 170px;
   }
   
   .dropdown-menu li {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--color-border-subtle);
   }
   
   .dropdown-menu li:last-child {
@@ -59,14 +74,15 @@
     width: 100%;
     background: none;
     border: none;
-    padding: 10px;
+    padding: 9px 12px;
     text-align: left;
     font-size: 14px;
     cursor: pointer;
+    color: var(--color-text-main);
   }
   
   .dropdown-menu button:hover {
-    background-color: #f8f9fa;
+    background-color: var(--color-surface-muted);
   }
 
 
@@ -80,12 +96,44 @@
   }
 
   .Logo img {
-    width: 40px; /* Tamaño del logo */
-    height: 40px; /* Tamaño del logo */
-}
+    width: 40px;
+    height: 40px;
+  }
 
-.Logo h1 {
-    margin: 0; /* Elimina márgenes por defecto */
-    font-size: 20px; /* Tamaño del texto */
-    color: #003366; /* Color del texto */
-}
+  .Logo h1 {
+    margin: 0;
+    font-size: 20px;
+    color: var(--color-primary);
+    letter-spacing: 0.02em;
+  }
+
+  .user-avatar {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .user-name {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  /* Responsive: en móviles mostramos solo el avatar para que quepa bien */
+  @media (max-width: 600px) {
+    .Header {
+      padding: 8px 16px;
+    }
+
+    .user-name {
+      display: none;
+    }
+
+    .Logo h1 {
+      font-size: 18px;
+    }
+  }
