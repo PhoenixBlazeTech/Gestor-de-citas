@@ -16,7 +16,7 @@ The relational database schema is implemented in Oracle and includes:
 - Constraints to enforce data integrity
 - Business rules implemented with PL/SQL
 
-📄 [Relational Database Model (PDF)](docs/relational_model.pdf)
+📄 [Relational Database Model (PDF)](docs/Relational_model.pdf)
 
 ### Schema scripts
 - `DB/schema/01_schema.sql` – tables and constraints
