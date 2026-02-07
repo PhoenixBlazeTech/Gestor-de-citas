@@ -4,14 +4,29 @@ Script para hashear las contraseñas existentes en la base de datos
 usando los stored procedures medico_update, paciente_update y empleado_update.
 """
 
-import oracledb
-from werkzeug.security import generate_password_hash
+import os
 import sys
 
-# Configuración de conexión a la base de datos
-USERNAME = "usr_citas"
-PASSWORD = "citapass"
-DSN = "localhost:1521/xepdb1"
+import oracledb
+from dotenv import load_dotenv
+from werkzeug.security import generate_password_hash
+
+# Cargar variables de entorno desde d:\Gestion_de_citas\.env
+project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+env_path = os.path.join(project_root, '.env')
+if not load_dotenv(env_path, override=True):
+    raise RuntimeError(f'No se pudo cargar el archivo .env en: {env_path}')
+
+# Credenciales de conexión
+dsn = os.getenv('dsn')
+username = os.getenv('username')
+password = os.getenv('password')
+dsn = os.getenv('dsn')
+if not all([username, password, dsn]):
+    raise RuntimeError('Faltan variables de entorno: username, password o dsn')
+
+print(f"[DB] Configuración cargada: username={username}, dsn={dsn}")
+
 
 def conectar_db():
     """Establece conexión con la base de datos Oracle"""
@@ -22,7 +37,7 @@ def conectar_db():
         except:
             pass  # En modo thin no es necesario
             
-        connection = oracledb.connect(user=USERNAME, password=PASSWORD, dsn=DSN)
+        connection = oracledb.connect(user=username, password=password, dsn=dsn)
         return connection
     except oracledb.DatabaseError as e:
         print(f"Error al conectar con la base de datos: {e}")
