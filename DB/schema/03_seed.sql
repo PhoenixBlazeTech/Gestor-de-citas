@@ -842,3 +842,6 @@ VALUES (99, 'Evolución favorable', 19);
 
 INSERT INTO PACIENTE_PADECIMIENTO (PACIENTE_ID, OBSERVACION, PADECIMIENTO_ID)
 VALUES (100, 'Control cada seis meses', 20);
+
+INSERT INTO empleado(nombre,apellido_pat,apellido_mat,usuario,contrasenia,rol)
+     VALUES('Alexander','kein','Smith','password','admin');
