@@ -1,0 +1,225 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap');
+
+.paciente-config {
+    min-height: 100vh;
+    padding: 60px 24px 90px;
+    background: radial-gradient(circle at 5% 20%, #f0f4ff, transparent 55%),
+                radial-gradient(circle at 85% 0%, #ffe9f2, transparent 45%),
+                #f6f7fb;
+    font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+    color: #0f1d40;
+}
+
+.paciente-config__hero {
+    max-width: 800px;
+    margin: 0 auto 40px;
+    text-align: center;
+}
+
+.paciente-config__eyebrow {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(38, 76, 255, 0.1);
+    color: #264cff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.paciente-config__hero h1 {
+    margin: 18px 0 12px;
+    font-size: 2.4rem;
+    font-weight: 600;
+}
+
+.paciente-config__hero p {
+    margin: 0 auto;
+    max-width: 640px;
+    font-size: 1rem;
+    color: #3c4663;
+}
+
+.paciente-config__card {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 32px;
+    padding: 40px;
+    box-shadow: 0 35px 80px rgba(8, 19, 72, 0.12);
+}
+
+.paciente-config__header {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(15, 29, 64, 0.08);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+}
+
+.paciente-config__header h2 {
+    margin: 0 0 8px;
+    font-size: 1.6rem;
+}
+
+.paciente-config__header p {
+    margin: 0;
+    color: #5a6380;
+}
+
+.paciente-config__badge {
+    align-self: flex-start;
+    padding: 8px 18px;
+    border-radius: 16px;
+    background: linear-gradient(120deg, #264cff, #7a5af8);
+    color: #fff;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+
+.paciente-config__alert {
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-weight: 500;
+    margin-bottom: 28px;
+}
+
+.paciente-config__alert--success {
+    background: rgba(65, 195, 129, 0.12);
+    color: #217a4c;
+}
+
+.paciente-config__alert--error {
+    background: rgba(255, 120, 120, 0.15);
+    color: #a1212d;
+}
+
+.paciente-config__form {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+.paciente-config__section {
+    background: #f9faff;
+    border: 1px solid rgba(15, 29, 64, 0.06);
+    border-radius: 24px;
+    padding: 26px;
+}
+
+.paciente-config__section-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.paciente-config__section-eyebrow {
+    margin: 0;
+    font-size: 0.85rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #5260a3;
+}
+
+.paciente-config__section-header h3 {
+    margin: 6px 0 0;
+    font-size: 1.2rem;
+}
+
+.paciente-config__section-header span {
+    color: #6a7396;
+    max-width: 320px;
+}
+
+.paciente-config__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.paciente-config__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.9rem;
+    color: #435072;
+}
+
+.paciente-config__input {
+    border: 1px solid rgba(15, 29, 64, 0.18);
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+}
+
+.paciente-config__input:focus {
+    outline: none;
+    border-color: #6a7dff;
+    box-shadow: 0 0 0 3px rgba(106, 125, 255, 0.15);
+}
+
+.paciente-config__select {
+    appearance: none;
+    background-image: linear-gradient(135deg, transparent 50%, #6a7dff 50%),
+                      linear-gradient(45deg, #6a7dff 50%, transparent 50%);
+    background-position: calc(100% - 18px) calc(50% - 3px), calc(100% - 12px) calc(50% - 3px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+}
+
+.paciente-config__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: flex-end;
+}
+
+.paciente-config__button {
+    border: none;
+    border-radius: 999px;
+    padding: 12px 28px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: linear-gradient(135deg, #264cff, #7a5af8);
+    color: #fff;
+    box-shadow: 0 16px 30px rgba(38, 76, 255, 0.35);
+}
+
+.paciente-config__button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.paciente-config__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.paciente-config__button--ghost {
+    background: transparent;
+    color: #2e3e7f;
+    border: 1px solid rgba(46, 62, 127, 0.25);
+    box-shadow: none;
+}
+
+@media (max-width: 720px) {
+    .paciente-config {
+        padding: 40px 16px 70px;
+    }
+
+    .paciente-config__card {
+        padding: 28px;
+    }
+
+    .paciente-config__section {
+        padding: 20px;
+    }
+}

@@ -1,0 +1,165 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap');
+
+.medico-config {
+    min-height: 100vh;
+    padding: 60px 24px 90px;
+    background: radial-gradient(circle at 10% 15%, #eaf9ff, transparent 55%),
+                radial-gradient(circle at 85% 5%, #fef1ff, transparent 45%),
+                #f5f7fb;
+    font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+    color: #0b1838;
+}
+
+.medico-config__hero {
+    max-width: 820px;
+    margin: 0 auto 40px;
+    text-align: center;
+}
+
+.medico-config__eyebrow {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(116, 76, 255, 0.12);
+    color: #744cff;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.medico-config__hero h1 {
+    margin: 18px 0 12px;
+    font-size: 2.2rem;
+    font-weight: 600;
+}
+
+.medico-config__hero p {
+    margin: 0 auto;
+    max-width: 620px;
+    font-size: 1rem;
+    color: #4a567a;
+}
+
+.medico-config__card {
+    max-width: 960px;
+    margin: 0 auto;
+    background: #ffffff;
+    border-radius: 32px;
+    padding: 40px;
+    box-shadow: 0 35px 80px rgba(9, 21, 64, 0.12);
+}
+
+.medico-config__header {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    border-bottom: 1px solid rgba(9, 21, 64, 0.08);
+    padding-bottom: 20px;
+    margin-bottom: 28px;
+}
+
+.medico-config__badge {
+    align-self: flex-start;
+    padding: 8px 18px;
+    border-radius: 16px;
+    background: linear-gradient(120deg, #744cff, #ff6f91);
+    color: #fff;
+    font-weight: 600;
+}
+
+.medico-config__alert {
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-weight: 500;
+    margin-bottom: 24px;
+}
+
+.medico-config__alert--success {
+    background: rgba(89, 201, 139, 0.15);
+    color: #1e7a4a;
+}
+
+.medico-config__alert--error {
+    background: rgba(255, 133, 133, 0.18);
+    color: #a02d38;
+}
+
+.medico-config__form label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.92rem;
+    color: #4a567a;
+}
+
+.medico-config__form input,
+.medico-config__form select {
+    border: 1px solid rgba(9, 21, 64, 0.15);
+    border-radius: 16px;
+    padding: 12px 14px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #fff;
+}
+
+.medico-config__form input:focus,
+.medico-config__form select:focus {
+    outline: none;
+    border-color: #9c6bff;
+    box-shadow: 0 0 0 3px rgba(156, 107, 255, 0.2);
+}
+
+.medico-config__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.medico-config__actions {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 14px;
+}
+
+.medico-config__button {
+    border: none;
+    border-radius: 999px;
+    padding: 12px 26px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    background: linear-gradient(135deg, #744cff, #ff6f91);
+    color: #fff;
+    box-shadow: 0 16px 30px rgba(116, 76, 255, 0.35);
+}
+
+.medico-config__button:hover:not(:disabled) {
+    transform: translateY(-2px);
+}
+
+.medico-config__button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.medico-config__button--ghost {
+    background: transparent;
+    color: #4a567a;
+    border: 1px solid rgba(74, 86, 122, 0.25);
+    box-shadow: none;
+}
+
+@media (max-width: 720px) {
+    .medico-config {
+        padding: 40px 16px 70px;
+    }
+
+    .medico-config__card {
+        padding: 28px;
+    }
+}
