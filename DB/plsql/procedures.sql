@@ -31,6 +31,7 @@ EXCEPTION
        RAISE;
     END IF;
 END;
+/
 
 -- Paciente Update Procedure
 
@@ -307,7 +308,7 @@ BEGIN
   WHERE medico_id = p_id;
   
   IF SQL%ROWCOUNT = 0 THEN
-    RAISE_APPLICATION_ERROR(-20013, 'No se eliminó || p_id || no existe');
+    RAISE_APPLICATION_ERROR(-20013, 'No se eliminó: médico con ID ' || p_id || ' no existe');
   END IF;
 EXCEPTION
   WHEN OTHERS THEN
@@ -318,3 +319,58 @@ EXCEPTION
   END IF;
 END;
 /
+
+--READ Medico PROCEDURE contraseña y id
+CREATE OR REPLACE PROCEDURE medico_pass(
+   p_user IN medico.usuario%TYPE,
+   p_id OUT medico.medico_id%TYPE,
+   p_pass OUT medico.contrasenia%TYPE
+)
+IS
+BEGIN
+   SELECT medico_id,contrasenia
+   INTO p_id,p_pass
+   FROM medico
+   WHERE usuario = p_user;
+EXCEPTION
+   WHEN NO_DATA_FOUND THEN
+     RAISE_APPLICATION_ERROR(-20011, 'Medico no encontrado');
+END;
+/
+
+--READ Paciente PROCEDURE contraseña y id
+CREATE OR REPLACE PROCEDURE paciente_pass(
+  p_user IN paciente.usuario%TYPE,
+  p_id OUT paciente.paciente_id%TYPE,
+  p_pass OUT paciente.contrasenia%TYPE
+)
+IS
+BEGIN 
+  SELECT paciente_id,contrasenia
+  INTO p_id,p_pass
+  FROM paciente
+  WHERE usuario = p_user;
+EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+    RAISE_APPLICATION_ERROR(-20011, 'Paciente no encontrado');
+END;
+/
+
+--READ Empleado PROCEDURE contraseña y id
+CREATE OR REPLACE PROCEDURE empleado_pass(
+  p_user IN empleado.usuario%TYPE,
+  p_id OUT empleado.empleado_id%TYPE,
+  p_pass OUT empleado.contrasenia%TYPE
+)
+IS
+BEGIN 
+  SELECT empleado_id,contrasenia
+  INTO p_id,p_pass
+  FROM empleado
+  WHERE usuario = p_user;
+EXCEPTION
+     WHEN NO_DATA_FOUND THEN
+     RAISE_APPLICATION_ERROR(-20011, 'empleado no encontrado');
+END;
+/
+
