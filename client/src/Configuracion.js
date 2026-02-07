@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import MedicoConfig from "./MedicoConfig";
 import PacienteConfig from "./PacienteConfig";
 import EmpleadoConfig from "./EmpleadoConfig";
+import "./Configuracion.css";
 
 function Configuracion() {
     const [role, setRole] = useState("");
@@ -27,13 +28,7 @@ function Configuracion() {
         }
     };
 
-    return (
-        <div>
-            <h1>Configuración</h1>
-            <h3>Aquí puede editar su perfil</h3>
-            {renderContent()}
-        </div>
-    );
+    return renderContent();
 }
 
 export default Configuracion;
