@@ -44,6 +44,12 @@
     box-shadow: 0 10px 20px rgba(24, 119, 242, 0.25);
 }
 
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
 .form-button:hover {
     background-color: var(--color-primary-dark);
     transform: translateY(-1px);

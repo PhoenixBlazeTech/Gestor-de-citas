@@ -49,6 +49,11 @@ function Login() {
     return (
         <div className="login-page">
             <div className="login-background" />
+            <div className="login-visual">
+                <span className="login-visual__orb" />
+                <span className="login-visual__orb login-visual__orb--secondary" />
+                <span className="login-visual__orb login-visual__orb--tertiary" />
+            </div>
             <div className="login-content">
                 <h1 className="login-logo">citaCare</h1>
                 <div className="login-card">
