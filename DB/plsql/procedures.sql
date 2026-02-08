@@ -374,3 +374,68 @@ EXCEPTION
 END;
 /
 
+--medico create procedure
+CREATE OR REPLACE PROCEDURE insert_medico(
+  p_id OUT medico.medico_id%TYPE,
+  p_nombre IN medico.nombre%TYPE,
+  a_pat  IN medico.apellido_pat%TYPE,
+  a_mat  IN medico.apellido_mat%TYPE,
+  p_user IN medico.usuario%TYPE,
+  p_pass IN medico.contrasenia%TYPE
+)
+IS
+BEGIN
+    INSERT INTO medico(nombre,apellido_pat,apellido_mat,usuario,contrasenia) 
+    VALUES(p_nombre,a_pat,a_mat,p_user,p_pass)
+   RETURNING medico_id INTO p_id;
+EXCEPTION 
+   WHEN DUP_VAL_ON_INDEX THEN
+    RAISE_APPLICATION_ERROR(-20010, 'User ya existe');
+END;
+/
+--Paciente create procedure
+CREATE OR REPLACE PROCEDURE insert_paciente(
+  p_id           OUT paciente.paciente_id%TYPE,
+  p_nombre       IN  paciente.nombre%TYPE,
+  p_apellido_pat IN  paciente.apellido_pat%TYPE,
+  p_apellido_mat IN  paciente.apellido_mat%TYPE,
+  p_usuario      IN  paciente.usuario%TYPE,
+  p_alcal_mun    IN  paciente.alcal_mun%TYPE,
+  p_colonia      IN  paciente.colonia%TYPE,
+  p_cp           IN  paciente.cp%TYPE,
+  p_calle        IN  paciente.calle%TYPE,
+  p_contrasenia  IN  paciente.contrasenia%TYPE
+)
+IS
+BEGIN
+  INSERT INTO paciente (
+    nombre,
+    apellido_pat,
+    apellido_mat,
+    usuario,
+    alcal_mun,
+    colonia,
+    cp,
+    calle,
+    contrasenia
+  )
+  VALUES (
+    p_nombre,
+    p_apellido_pat,
+    p_apellido_mat,
+    p_usuario,
+    p_alcal_mun,
+    p_colonia,
+    p_cp,
+    p_calle,
+    p_contrasenia
+  )
+  RETURNING paciente_id INTO p_id;
+
+EXCEPTION
+  WHEN DUP_VAL_ON_INDEX THEN
+    RAISE_APPLICATION_ERROR(-20010, 'El usuario ya existe');
+  WHEN OTHERS THEN
+    RAISE_APPLICATION_ERROR(-20099, SQLERRM);
+END insert_paciente;
+/
