@@ -3,63 +3,63 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 44px;
-  background-color: var(--color-surface);
-  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 18px clamp(16px, 6vw, 48px);
   width: 100%;
   box-sizing: border-box;
-  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
   position: sticky;
   top: 0;
   z-index: 10;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92), rgba(246, 248, 255, 0.92));
+  border-bottom: 1px solid rgba(149, 161, 198, 0.25);
+  box-shadow: 0 10px 35px rgba(20, 32, 75, 0.08);
+  backdrop-filter: blur(12px);
 }
 
 .user-menu {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 .user-button {
   display: flex;
   align-items: center;
-  gap: 6px;
-  background-color: var(--color-surface);
-  color: var(--color-text-main);
-  border: 1px solid var(--color-border-subtle);
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 14px;
+  gap: 10px;
+  background: linear-gradient(120deg, #f7f8ff, #fbf6ff);
+  color: #1f2440;
+  border: 1px solid rgba(131, 143, 187, 0.4);
+  border-radius: 999px;
+  padding: 10px 18px;
+  font-size: 15px;
   cursor: pointer;
   box-shadow: none;
-  transition: background-color 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
   
   .user-button .dropdown-arrow {
     margin-left: 8px;
   }
   
-  .user-button:hover {
-    background-color: var(--color-primary-soft);
-    border-color: var(--color-primary);
-    color: var(--color-primary);
-  }
-
+  .user-button:hover,
   .user-button.is-open {
-    background-color: var(--color-primary-soft);
-    border-color: var(--color-primary);
+    background: linear-gradient(120deg, #f0f4ff, #f7ecff);
+    border-color: #7c5dff;
+    box-shadow: 0 10px 25px rgba(124, 93, 255, 0.18);
   }
   
   .dropdown-menu {
     position: absolute;
     top: 110%;
     right: 0;
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-border-subtle);
-    border-radius: var(--radius-md);
-    box-shadow: var(--shadow-soft);
+    background-color: #fff;
+    border: 1px solid rgba(164, 180, 219, 0.45);
+    border-radius: 18px;
+    box-shadow: 0 20px 45px rgba(30, 41, 93, 0.15);
     list-style: none;
     padding: 4px 0;
     margin: 6px 0;
     width: 170px;
+    overflow: hidden;
   }
   
   .dropdown-menu li {
@@ -78,11 +78,13 @@
     text-align: left;
     font-size: 14px;
     cursor: pointer;
-    color: var(--color-text-main);
+    color: #1f2440;
+    transition: background 0.18s ease, color 0.18s ease;
   }
   
   .dropdown-menu button:hover {
-    background-color: var(--color-surface-muted);
+    background-color: #f4f6ff;
+    color: #7c5dff;
   }
 
 
@@ -92,35 +94,39 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap:10px;
+    gap:12px;
   }
 
   .Logo img {
-    width: 40px;
-    height: 40px;
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    box-shadow: 0 8px 18px rgba(26, 61, 117, 0.18);
   }
 
   .Logo h1 {
     margin: 0;
-    font-size: 20px;
-    color: var(--color-primary);
-    letter-spacing: 0.02em;
+    font-size: 22px;
+    color: #1f66ff;
+    letter-spacing: 0.015em;
+    font-weight: 700;
   }
 
   .user-avatar {
-    width: 20px;
-    height: 20px;
-    border-radius: 4px;
-    background-color: var(--color-primary-soft);
-    color: var(--color-primary);
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: radial-gradient(circle at 30% 20%, #9bc3ff, #7a8bff);
+    color: #fff;
     display: inline-flex;
     align-items: center;
     justify-content: center;
   }
 
   .user-name {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2440;
   }
 
   /* Responsive: en móviles mostramos solo el avatar para que quepa bien */
@@ -135,5 +141,10 @@
 
     .Logo h1 {
       font-size: 18px;
+    }
+
+    .user-button {
+      padding: 10px;
+      border-radius: 16px;
     }
   }
