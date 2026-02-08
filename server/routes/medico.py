@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, request
+from werkzeug.security import generate_password_hash
 from utils.db import get_db_connection
 
 medico_bp = Blueprint('medico', __name__, url_prefix='/api')
@@ -77,3 +78,34 @@ def get_pacientes_por_medico(medico_id):
     except Exception as error:
         print(f"Error al obtener pacientes: {error}")
         return jsonify({"error": "Error al obtener pacientes"}), 500
+
+@medico_bp.route('/medico', methods=['POST'])
+def insert_medico():
+    data = request.json or {}
+    required_fields = ["nombre", "apellidoPat", "apellidoMat", "usuario", "contrasenia"]
+    missing = [field for field in required_fields if not data.get(field)]
+    if missing:
+        return jsonify({"error": f"Faltan campos obligatorios: {', '.join(missing)}"}), 400
+
+    try:
+        with get_db_connection() as (connection, cursor):
+            out_id = cursor.var(int)
+            contrasenia_hash = generate_password_hash(data["contrasenia"], method='pbkdf2:sha256')
+            cursor.callproc('insert_medico', [
+                out_id,
+                data["nombre"],
+                data["apellidoPat"],
+                data["apellidoMat"],
+                data["usuario"],
+                contrasenia_hash,
+            ])
+            connection.commit()
+
+            return jsonify({
+                "message": "Médico creado exitosamente",
+                "medico_id": out_id.getvalue()
+            }), 201
+
+    except Exception as error:
+        return jsonify({"error": f"Error al crear médico: {error}"}), 500
+
