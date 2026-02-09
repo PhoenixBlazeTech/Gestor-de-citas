@@ -80,116 +80,6 @@ def get_paciente(id):
     except Exception as error:
         return jsonify({"error": str(error)}), 500
 
-@paciente_bp.route('/paciecon/<paciente_id>', methods=['GET'])
-def get_citas_por_paciente(paciente_id):
-    try:
-        with get_db_connection() as (connection, cursor):
-            query = """
-                SELECT 
-                    c.CITAS_ID,
-                    TO_CHAR(c.FECHA_HORA_CITA, 'YYYY-MM-DD HH24:MI:SS') AS FECHA_HORA_CITA,
-                    c.ESTADO_CITA,
-                    m.NOMBRE || ' ' || m.APELLIDO_PAT || ' ' || m.APELLIDO_MAT AS MEDICO_NOMBRE
-                FROM CITAS c
-                JOIN MEDICO m ON c.MEDICO_ID = m.MEDICO_ID
-                WHERE c.PACIENTE_ID = :paciente_id
-            """
-            cursor.execute(query, {"paciente_id": paciente_id})
-            citas = [
-                {
-                    "id": row[0],
-                    "fechaHora": row[1],
-                    "estado": row[2],
-                    "medico": row[3]
-                }
-                for row in cursor.fetchall()
-            ]
-            return jsonify(citas)
-
-    except Exception as error:
-        print(f"Error al obtener citas: {error}")
-        return jsonify({"error": "Error al obtener citas"}), 500
-
-@paciente_bp.route('/historial/<paciente_id>', methods=['GET'])
-def get_historial_medico(paciente_id):
-    try:
-        with get_db_connection() as (connection, cursor):
-            query = """
-                SELECT 
-                    TO_CHAR(C.FECHA_HORA_CITA, 'YYYY-MM-DD HH24:MI:SS') AS FECHA_HORA_CITA,
-                    C.ESTADO_CITA,
-                    C.NUM_CONSULTORIO,
-                    D.DIAGNOSTICO,
-                    R.PERIODICIDAD AS RECETA,
-                    M.NOMBRE AS MEDICAMENTO
-                FROM PACIENTE P
-                JOIN CITAS C ON P.PACIENTE_ID = C.PACIENTE_ID   
-                JOIN DIAGNOSTICO D ON C.CITAS_ID = D.CITAS_ID    
-                JOIN RECETA R ON D.DIAGNOSTICO_ID = R.DIAGNOSTICO_ID 
-                JOIN MEDICAMENTO M ON R.MEDICAMENTO_ID = M.MEDICAMENTO_ID 
-                WHERE P.PACIENTE_ID = :paciente_id
-                ORDER BY C.FECHA_HORA_CITA DESC
-            """
-            cursor.execute(query, {"paciente_id": paciente_id})
-            historial = [
-                {
-                    "fechaHora": row[0],
-                    "estado": row[1],
-                    "consultorio": row[2],
-                    "diagnostico": row[3],
-                    "receta": row[4],
-                    "medicamento": row[5],
-                }
-                for row in cursor.fetchall()
-            ]
-            return jsonify(historial)
-
-    except Exception as error:
-        print(f"Error al obtener historial médico: {error}")
-        return jsonify({"error": "Error al obtener historial médico"}), 500
-
-@paciente_bp.route('/padecimientos/add', methods=['POST'])
-def add_padecimiento_and_associate():
-    try:
-        data = request.get_json()
-        padecimiento = data.get("padecimiento")
-        paciente_id = data.get("paciente_id")
-        observacion = data.get("observacion", "Sin observación")
-
-        # Validaciones
-        if not padecimiento or len(padecimiento) > 20:
-            return jsonify({"error": "Padecimiento inválido o demasiado largo"}), 400
-        if not paciente_id:
-            return jsonify({"error": "Paciente ID no proporcionado"}), 400
-        if len(observacion) > 33:
-            return jsonify({"error": "Observación demasiado larga"}), 400
-
-        with get_db_connection() as (connection, cursor):
-            # Insertar en PADECIMIENTO
-            cursor.execute(
-                "INSERT INTO PADECIMIENTO (PADECIMIENTO) VALUES (:padecimiento)",
-                {"padecimiento": padecimiento},
-            )
-
-            # Obtener el ID generado automáticamente por el trigger
-            cursor.execute("SELECT 'PA' || LPAD(SEQ_PADECIMIENTO_ID.CURRVAL, 2, '0') FROM DUAL")
-            nuevo_padecimiento_id = cursor.fetchone()[0]
-
-            # Asociar con PACIENTE_PADECIMIENTO
-            cursor.execute(
-                "INSERT INTO PACIENTE_PADECIMIENTO (PACIENTE_ID, PADECIMIENTO_ID, OBSERVACION) "
-                "VALUES (:paciente_id, :padecimiento_id, :observacion)",
-                {
-                    "paciente_id": paciente_id,
-                    "padecimiento_id": nuevo_padecimiento_id,
-                    "observacion": observacion,
-                },
-            )
-
-            return jsonify({"message": "Padecimiento creado y asociado con éxito"}), 201
-
-    except Exception as error:
-        return jsonify({"error": str(error)}), 500
 
 @paciente_bp.route('/paciente', methods=['POST'])
 def insert_paciente():
@@ -236,4 +126,75 @@ def insert_paciente():
 
     except Exception as error:
         return jsonify({"error": f"Error al crear paciente: {error}"}), 500
+
+@paciente_bp.route('/paciente/<int:paciente_id>', methods=['DELETE'])
+def delete_paciente(paciente_id):
+    try:
+        with get_db_connection() as (connection, cursor):
+            cursor.callproc('paciente_delete', [paciente_id])
+            
+            return jsonify({"message": f"Paciente con ID {paciente_id} eliminado exitosamente"}), 200
+
+    except Exception as error:
+        error_str = str(error)
+        
+        # Capturar el error ORA-20014 (paciente tiene registros asociados)
+        if 'ORA-20014' in error_str:
+            return jsonify({
+                "error": "No se puede eliminar: el paciente tiene citas o registros asociados."
+            }), 409
+        
+        # Capturar el error ORA-20013 (paciente no existe)
+        elif 'ORA-20013' in error_str:
+            return jsonify({
+                "error": f"No se eliminó: paciente con ID {paciente_id} no existe"
+            }), 404
+        
+        # Cualquier otro error
+        else:
+            return jsonify({"error": f"Error al eliminar paciente: {error}"}), 500
+        
+@paciente_bp.route('/paciente/list', methods=['GET'])
+def get_pacientes_paginados():
+    try:
+        limit = request.args.get('limit', 10, type=int)
+        last_id = request.args.get('last_id', 0, type=int)
+        
+        with get_db_connection() as (connection, cursor):
+            if last_id == 0:
+                # Primera carga de datos
+                query = """
+                    SELECT paciente_id, 
+                           (nombre || ' ' || apellido_pat || ' ' || apellido_mat) as nombre_completo
+                    FROM paciente
+                    ORDER BY paciente_id
+                    FETCH NEXT :limit ROWS ONLY
+                """
+                cursor.execute(query, {"limit": limit})
+            else:
+                # Cargar más datos (keyset pagination)
+                query = """
+                    SELECT paciente_id, 
+                           (nombre || ' ' || apellido_pat || ' ' || apellido_mat) as nombre_completo
+                    FROM paciente
+                    WHERE paciente_id > :last_id
+                    ORDER BY paciente_id
+                    FETCH NEXT :limit ROWS ONLY
+                """
+                cursor.execute(query, {"last_id": last_id, "limit": limit})
+            
+            rows = cursor.fetchall()
+            pacientes = [
+                {
+                    "paciente_id": row[0],
+                    "nombre_completo": row[1]
+                }
+                for row in rows
+            ]
+            
+            return jsonify({"pacientes": pacientes}), 200
+    
+    except Exception as error:
+        print(f"Error al obtener lista de pacientes: {error}")
+        return jsonify({"error": f"Error al obtener lista de pacientes: {error}"}), 500
 

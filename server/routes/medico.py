@@ -109,3 +109,71 @@ def insert_medico():
     except Exception as error:
         return jsonify({"error": f"Error al crear médico: {error}"}), 500
 
+@medico_bp.route('/medico/<int:medico_id>', methods=['DELETE'])
+def delete_medico(medico_id):
+    try:
+        with get_db_connection() as (connection, cursor):
+            cursor.callproc('medico_delete', [medico_id])
+            connection.commit()
+            return jsonify({"message": "Médico eliminado exitosamente"})
+
+    except Exception as error:
+        error_text = str(error)
+        if 'ORA-20013' in error_text or '20013' in error_text:
+            return jsonify({"error": f"No se eliminó: médico con ID {medico_id} no existe"}), 404
+        if 'ORA-20014' in error_text or '20014' in error_text:
+            return jsonify({"error": "No se puede eliminar: el médico tiene registros asociados"}), 409
+        return jsonify({"error": f"Error al eliminar médico: {error}"}), 500
+
+@medico_bp.route('/medico', methods=['GET'])
+def list_medicos():
+    try:
+        limit = request.args.get('limit', default=10, type=int) or 10
+        limit = max(1, min(limit, 50))
+        after_id = request.args.get('after', type=int)
+        raw_search = request.args.get('search', type=str)
+        normalized_search = raw_search.strip() if raw_search else None
+
+        limit_plus_one = limit + 1
+
+        with get_db_connection() as (connection, cursor):
+            query = f"""
+                SELECT MEDICO_ID,
+                       NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT AS NOMBRE_COMPLETO
+                FROM MEDICO
+                WHERE (:after_id IS NULL OR MEDICO_ID > :after_id)
+                  AND (
+                        :search_term IS NULL OR
+                        UPPER(NOMBRE || ' ' || APELLIDO_PAT || ' ' || APELLIDO_MAT) LIKE '%' || UPPER(:search_term) || '%'
+                      )
+                ORDER BY MEDICO_ID
+                FETCH NEXT {limit_plus_one} ROWS ONLY
+            """
+
+            cursor.execute(query, {
+                "after_id": after_id,
+                "search_term": normalized_search,
+            })
+
+            rows = cursor.fetchall()
+            has_more = len(rows) > limit
+            trimmed_rows = rows[:limit]
+
+            payload = {
+                "data": [
+                    {
+                        "medico_id": row[0],
+                        "nombre_completo": row[1],
+                    }
+                    for row in trimmed_rows
+                ],
+                "pageSize": limit,
+                "hasMore": has_more,
+                "nextCursor": trimmed_rows[-1][0] if has_more and trimmed_rows else None,
+            }
+
+            return jsonify(payload)
+
+    except Exception as error:
+        return jsonify({"error": f"Error al listar médicos: {error}"}), 500
+
