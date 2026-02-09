@@ -12,3 +12,7 @@ Thumbs.db
 .vscode/
 
 .env 
+
+__pycache__/
+*.pyc
+
