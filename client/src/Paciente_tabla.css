@@ -1,0 +1,372 @@
+:root {
+	--color-bg: #f5f6fb;
+	--color-surface: #ffffff;
+	--color-border: #e1e6ef;
+	--color-muted: #6b7280;
+	--color-text: #111827;
+	--color-primary: #2563eb;
+	--color-primary-dark: #1d4ed8;
+	--color-danger: #e11d48;
+	--color-danger-dark: #be123c;
+	--color-success: #16a34a;
+	--radius-md: 16px;
+	--radius-sm: 10px;
+	--shadow-sm: 0 8px 20px rgba(17, 24, 39, 0.08);
+	--shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.15);
+	--space-lg: clamp(1.5rem, 2vw + 1rem, 3rem);
+	--space-md: 1.5rem;
+	--space-sm: 0.75rem;
+	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.paciente-tabla {
+	min-height: 100vh;
+	padding: var(--space-lg);
+	background: var(--color-bg);
+	display: flex;
+	color: var(--color-text);
+}
+
+.paciente-tabla__hero {
+	max-width: 900px;
+	width: 100%;
+	margin-bottom: var(--space-lg);
+}
+
+.paciente-tabla__eyebrow {
+	display: inline-block;
+	text-transform: uppercase;
+	letter-spacing: 0.12em;
+	font-size: 0.75rem;
+	font-weight: 600;
+	color: var(--color-muted);
+}
+
+.paciente-tabla__hero h1 {
+	font-size: clamp(2rem, 3vw, 2.8rem);
+	margin: 0.35rem 0;
+}
+
+.paciente-tabla__hero p {
+	font-size: 1rem;
+	color: var(--color-muted);
+	max-width: 600px;
+}
+
+.paciente-tabla__notification {
+	width: min(900px, 100%);
+	padding: 1rem 1.25rem;
+	border-radius: var(--radius-sm);
+	margin-bottom: 1rem;
+	font-weight: 600;
+	color: #fff;
+	animation: slideFade 300ms ease;
+}
+
+.paciente-tabla__notification--success {
+	background: var(--color-success);
+}
+
+.paciente-tabla__notification--error {
+	background: var(--color-danger);
+}
+
+.paciente-tabla__card {
+	width: min(900px, 100%);
+	background: var(--color-surface);
+	border-radius: var(--radius-md);
+	padding: var(--space-md);
+	box-shadow: var(--shadow-sm);
+	border: 1px solid var(--color-border);
+}
+
+.paciente-tabla__search {
+	margin-bottom: var(--space-md);
+}
+
+.paciente-tabla__search-input {
+	width: 100%;
+	padding: 0.85rem 1rem;
+	box-sizing: border-box;
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	font-size: 1rem;
+	background: #fdfdff;
+	color: var(--color-text);
+	transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.paciente-tabla__search-input::placeholder {
+	color: var(--color-muted);
+}
+
+.paciente-tabla__search-input:focus-visible {
+	outline: none;
+	border-color: var(--color-primary);
+	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.25);
+}
+
+.paciente-tabla__container {
+	border: 1px solid var(--color-border);
+	border-radius: var(--radius-sm);
+	overflow: hidden;
+	position: relative;
+}
+
+.paciente-tabla__table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.95rem;
+}
+
+.paciente-tabla__table thead {
+	background: #f8fafc;
+	position: sticky;
+	top: 0;
+	z-index: 1;
+}
+
+.paciente-tabla__table th,
+.paciente-tabla__table td {
+	padding: 0.9rem 1rem;
+	text-align: left;
+	border-bottom: 1px solid var(--color-border);
+}
+
+.paciente-tabla__table th {
+	font-size: 0.85rem;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--color-muted);
+}
+
+.paciente-tabla__table tbody tr:nth-child(even) {
+	background: #fbfcfe;
+}
+
+.paciente-tabla__table tbody tr:hover {
+	background: #eef2ff;
+}
+
+.paciente-tabla__table td:first-child {
+	width: 80px;
+	font-weight: 600;
+	color: var(--color-muted);
+}
+
+.paciente-tabla__nombre-header {
+	width: 100%;
+}
+
+.paciente-tabla__acciones-header,
+.paciente-tabla__table td:last-child {
+	text-align: center;
+	width: 120px;
+}
+
+.paciente-tabla__empty {
+	padding: 2rem 1rem;
+	text-align: center;
+	color: var(--color-muted);
+}
+
+.paciente-tabla__delete-btn {
+	border: none;
+	border-radius: 999px;
+	padding: 0.4rem 0.85rem;
+	background: rgba(225, 29, 72, 0.14);
+	color: var(--color-danger);
+	font-size: 1rem;
+	cursor: pointer;
+	transition: background 160ms ease, color 160ms ease;
+}
+
+.paciente-tabla__delete-btn:hover {
+	background: rgba(225, 29, 72, 0.25);
+	color: var(--color-danger-dark);
+}
+
+.paciente-tabla__delete-btn:active {
+	transform: scale(0.95);
+}
+
+.paciente-tabla__delete-btn:focus-visible {
+	outline: 3px solid rgba(225, 29, 72, 0.35);
+	outline-offset: 2px;
+}
+
+.paciente-tabla__more {
+	margin-top: var(--space-md);
+	text-align: center;
+}
+
+.paciente-tabla__more-btn {
+	border: none;
+	border-radius: 999px;
+	padding: 0.85rem 2rem;
+	font-weight: 600;
+	color: #fff;
+	background: var(--color-primary);
+	cursor: pointer;
+	box-shadow: 0 12px 25px rgba(37, 99, 235, 0.25);
+	transition: background 160ms ease, transform 160ms ease;
+}
+
+.paciente-tabla__more-btn:hover {
+	background: var(--color-primary-dark);
+	transform: translateY(-1px);
+}
+
+.paciente-tabla__more-btn:active {
+	transform: translateY(0);
+}
+
+.paciente-tabla__more-btn:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.paciente-tabla__more-btn:focus-visible {
+	outline: 3px solid rgba(37, 99, 235, 0.35);
+	outline-offset: 3px;
+}
+
+.paciente-tabla__modal-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(15, 23, 42, 0.5);
+	backdrop-filter: blur(6px);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 1.5rem;
+	z-index: 10;
+	animation: fadeIn 200ms ease;
+}
+
+.paciente-tabla__modal {
+	background: var(--color-surface);
+	border-radius: var(--radius-md);
+	padding: 2rem;
+	width: min(420px, 100%);
+	box-shadow: var(--shadow-lg);
+	text-align: center;
+	animation: scaleIn 220ms ease;
+}
+
+.paciente-tabla__modal-icon {
+	font-size: 2.8rem;
+	margin-bottom: 1rem;
+}
+
+.paciente-tabla__modal h2 {
+	margin-bottom: 0.5rem;
+}
+
+.paciente-tabla__modal p {
+	color: var(--color-muted);
+	margin-bottom: 0.75rem;
+}
+
+.paciente-tabla__modal-warning {
+	color: var(--color-danger);
+	font-weight: 600;
+	margin-bottom: 1.5rem;
+}
+
+.paciente-tabla__modal-actions {
+	display: flex;
+	gap: 0.75rem;
+}
+
+.paciente-tabla__modal-btn {
+	flex: 1;
+	padding: 0.85rem 1rem;
+	font-weight: 600;
+	border-radius: var(--radius-sm);
+	border: 1px solid transparent;
+	cursor: pointer;
+	transition: background 160ms ease, color 160ms ease, border-color 160ms ease;
+}
+
+.paciente-tabla__modal-btn:focus-visible {
+	outline: 3px solid rgba(37, 99, 235, 0.35);
+	outline-offset: 2px;
+}
+
+.paciente-tabla__modal-btn--cancel {
+	background: #f8fafc;
+	border-color: var(--color-border);
+	color: var(--color-text);
+}
+
+.paciente-tabla__modal-btn--cancel:hover {
+	background: #e5e7eb;
+}
+
+.paciente-tabla__modal-btn--confirm {
+	background: var(--color-danger);
+	color: #fff;
+}
+
+.paciente-tabla__modal-btn--confirm:hover {
+	background: var(--color-danger-dark);
+}
+
+@keyframes slideFade {
+	from {
+		opacity: 0;
+		transform: translateY(-6px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+@keyframes scaleIn {
+	from {
+		opacity: 0;
+		transform: scale(0.94);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@media (max-width: 640px) {
+	.paciente-tabla {
+		padding: 1.5rem;
+	}
+
+	.paciente-tabla__card {
+		padding: 1.25rem;
+	}
+
+	.paciente-tabla__table th,
+	.paciente-tabla__table td {
+		padding: 0.75rem;
+	}
+
+	.paciente-tabla__container {
+		overflow-x: auto;
+	}
+
+	.paciente-tabla__modal {
+		padding: 1.5rem;
+	}
+
+	.paciente-tabla__modal-actions {
+		flex-direction: column;
+	}
+}

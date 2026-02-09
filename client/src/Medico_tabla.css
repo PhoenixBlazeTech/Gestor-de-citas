@@ -1,0 +1,359 @@
+:root {
+    --color-bg: #f5f7fb;
+    --color-surface: #ffffff;
+    --color-border: #e2e8f0;
+    --color-muted: #6b7280;
+    --color-text: #111827;
+    --color-primary: #2563eb;
+    --color-primary-dark: #1e40af;
+    --color-success: #10b981;
+    --color-error: #ef4444;
+    --color-danger-soft: #fee2e2;
+    --shadow-soft: 0 15px 35px rgba(15, 23, 42, 0.08);
+    --radius-lg: 24px;
+    --radius-md: 12px;
+    --radius-sm: 8px;
+    --spacing-page: clamp(1.5rem, 3vw, 3.5rem);
+    --focus-ring: 0 0 0 3px rgba(37, 99, 235, 0.35);
+}
+
+.medico-tabla {
+    font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    color: var(--color-text);
+    background: var(--color-bg);
+    min-height: 100vh;
+    padding: var(--spacing-page);
+    display: flex;
+    justify-content: center;
+}
+
+.medico-tabla > * {
+    width: min(960px, 100%);
+}
+
+.medico-tabla__hero {
+    text-align: left;
+    margin-bottom: 2rem;
+}
+
+.medico-tabla__eyebrow {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-muted);
+}
+
+.medico-tabla__hero h1 {
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    margin: 0.35rem 0;
+}
+
+.medico-tabla__hero p {
+    margin: 0;
+    color: #4b5563;
+    max-width: 48ch;
+    line-height: 1.6;
+}
+
+.medico-tabla__notification {
+    border-radius: var(--radius-md);
+    padding: 0.85rem 1.25rem;
+    font-weight: 500;
+    margin-bottom: 1.25rem;
+    animation: slideFade 350ms ease forwards;
+}
+
+.medico-tabla__notification--success {
+    background: rgba(16, 185, 129, 0.12);
+    color: var(--color-success);
+}
+
+.medico-tabla__notification--error {
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--color-error);
+}
+
+.medico-tabla__card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    box-shadow: var(--shadow-soft);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+}
+
+.medico-tabla__search {
+    margin-bottom: 1.5rem;
+}
+
+.medico-tabla__search-input {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    padding: 0.9rem 1.15rem;
+    font-size: 1rem;
+    transition: border-color 160ms ease, box-shadow 160ms ease;
+    color: var(--color-text);
+    background: #fdfdfd;
+}
+
+.medico-tabla__search-input::placeholder {
+    color: #9ca3af;
+}
+
+.medico-tabla__search-input:focus-visible {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
+}
+
+.medico-tabla__container {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+}
+
+.medico-tabla__table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    min-width: 640px;
+}
+
+.medico-tabla__table th,
+.medico-tabla__table td {
+    padding: 0.95rem 1rem;
+    text-align: left;
+}
+
+.medico-tabla__table th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.medico-tabla__table tr:nth-child(even) td {
+    background: rgba(15, 23, 42, 0.02);
+}
+
+.medico-tabla__table tr:hover td {
+    background: rgba(37, 99, 235, 0.06);
+}
+
+.medico-tabla__table td {
+    border-bottom: 1px solid var(--color-border);
+    color: #1f2937;
+}
+
+.medico-tabla__table td:first-child,
+.medico-tabla__table th:first-child {
+    width: 72px;
+    font-feature-settings: 'tnum';
+    text-align: center;
+}
+
+.medico-tabla__nombre-header {
+    width: 65%;
+}
+
+.medico-tabla__acciones-header,
+.medico-tabla__table td:last-child {
+    text-align: center;
+    width: 120px;
+}
+
+.medico-tabla__empty {
+    text-align: center;
+    padding: 2.5rem;
+    color: var(--color-muted);
+    font-weight: 500;
+}
+
+.medico-tabla__delete-btn {
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 999px;
+    border: none;
+    background: var(--color-danger-soft);
+    color: var(--color-error);
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 120ms ease, background 160ms ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.medico-tabla__delete-btn:hover {
+    background: #fecaca;
+}
+
+.medico-tabla__delete-btn:active {
+    transform: scale(0.94);
+}
+
+.medico-tabla__delete-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.medico-tabla__more {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.25rem;
+}
+
+.medico-tabla__more-btn {
+    min-width: 160px;
+    min-height: 44px;
+    border: none;
+    border-radius: var(--radius-md);
+    background: var(--color-primary);
+    color: #fff;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 160ms ease, transform 120ms ease;
+}
+
+.medico-tabla__more-btn:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+}
+
+.medico-tabla__more-btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.medico-tabla__more-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.medico-tabla__more-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.medico-tabla__modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(3px);
+    padding: 1rem;
+    z-index: 50;
+}
+
+.medico-tabla__modal {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 4vw, 2.25rem);
+    width: min(420px, 100%);
+    box-shadow: 0 25px 50px rgba(15, 23, 42, 0.25);
+    animation: modalAppear 220ms ease;
+}
+
+.medico-tabla__modal h2 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.medico-tabla__modal p {
+    color: #374151;
+    line-height: 1.5;
+}
+
+.medico-tabla__modal-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 999px;
+    background: rgba(239, 68, 68, 0.12);
+    color: var(--color-error);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.medico-tabla__modal-warning {
+    font-weight: 600;
+    color: var(--color-error);
+}
+
+.medico-tabla__modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+}
+
+.medico-tabla__modal-btn {
+    flex: 1;
+    min-height: 44px;
+    border-radius: var(--radius-md);
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+}
+
+.medico-tabla__modal-btn:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
+.medico-tabla__modal-btn--cancel {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.medico-tabla__modal-btn--cancel:hover {
+    background: #e5e7eb;
+}
+
+.medico-tabla__modal-btn--confirm {
+    background: var(--color-error);
+    color: #fff;
+}
+
+.medico-tabla__modal-btn--confirm:hover {
+    background: #dc2626;
+}
+
+@keyframes slideFade {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: translateY(12px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 640px) {
+    .medico-tabla {
+        padding: 1.25rem;
+    }
+
+    .medico-tabla__card {
+        padding: 1.25rem;
+    }
+
+    .medico-tabla__modal {
+        width: 100%;
+        padding: 1.5rem;
+    }
+}
