@@ -7,6 +7,8 @@ import Empleado from "./Empleado";
 import Configuracion from "./Configuracion";
 import DiagnosticoPage from "./DiagnosticoPage";
 import ProtectedRoute from "./ProtectedRoute";
+import Paciente_tabla from "./paciente_tabla";
+import Medico_tabla from "./medico_tabla";
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/medico" element={<Medico />} />
             <Route path="/paciente" element={<Paciente />} />
+            <Route path="/paciente-tabla" element={<Paciente_tabla />} />
+            <Route path="/medico-tabla" element={<Medico_tabla />} />
             <Route path="/empleado" element={<Empleado />} />
             <Route path="/configuracion" element={<Configuracion />} />
             <Route path="/diagnostico/:citaId/:pacienteId" element={<DiagnosticoPage />} />
