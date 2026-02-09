@@ -298,7 +298,7 @@ EXCEPTION
 END;
 /
 
---DELETE
+--DELETE medico PROCEDURE
 CREATE OR REPLACE PROCEDURE medico_delete(
   p_id IN medico.medico_id%TYPE
 )
@@ -319,6 +319,27 @@ EXCEPTION
   END IF;
 END;
 /
+
+--Paciente DELETE PROCEDURE
+create or replace PROCEDURE paciente_delete(
+  p_id IN paciente.paciente_id%TYPE
+)
+IS
+BEGIN 
+   DELETE FROM paciente
+   WHERE paciente_id = p_id;
+   IF SQL%ROWCOUNT = 0 THEN
+     RAISE_APPLICATION_ERROR(-20013, 'No se eliminó: paciente con ID ' || p_id || ' no existe');
+   END IF;
+EXCEPTION
+  WHEN OTHERS THEN
+  IF SQLCODE = -2292 THEN
+     RAISE_APPLICATION_ERROR(-20014, 'No se puede eliminar: el paciente tiene citas o registros asociados.');
+  ELSE
+    RAISE;
+  END IF;
+END;
+
 
 --READ Medico PROCEDURE contraseña y id
 CREATE OR REPLACE PROCEDURE medico_pass(

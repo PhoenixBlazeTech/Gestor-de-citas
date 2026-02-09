@@ -98,19 +98,20 @@ CREATE TABLE diagnostico(
     diagnostico CLOB,
     cita_id NUMBER,
     CONSTRAINT diagnostico_pk PRIMARY KEY(diagnostico_id),
-    CONSTRAINT cita_fk FOREIGN KEY(cita_id) REFERENCES citas(cita_id)
+    CONSTRAINT cita_fk FOREIGN KEY(cita_id) REFERENCES citas(cita_id) ON DELETE CASCADE
 );
 
 --Tabla: RECETA
 CREATE TABLE receta (
     receta_id NUMBER
         GENERATED ALWAYS AS IDENTITY,
-    medico_id NUMBER NOT NULL,
-    paciente_id NUMBER NOT NULL,
+    medico_id NUMBER ,
+    paciente_id NUMBER ,
     fecha_emision DATE,
     medicamentos VARCHAR2(20),
-    CONSTRAINT medic_fk FOREIGN KEY(medico_id) REFERENCES medico(medico_id),
-    CONSTRAINT pacients_fk FOREIGN KEY(paciente_id) REFERENCES paciente(paciente_id)
+    CONSTRAINT medic_fk FOREIGN KEY(medico_id) REFERENCES medico(medico_id) ON DELETE SET NULL,
+    CONSTRAINT pacients_fk FOREIGN KEY(paciente_id) REFERENCES paciente(paciente_id) ON DELETE SET NULL,
+    CONSTRAINT receta_pk PRIMARY KEY(receta_id)
 );
 
 -- Tabla: EMPLEADO
