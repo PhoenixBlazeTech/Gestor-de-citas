@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./EmpleadoContent.css";
 
 const initialDoctorForm = {
@@ -28,6 +29,7 @@ function EmpleadoContent() {
     const [patientStatus, setPatientStatus] = useState(null);
     const [doctorLoading, setDoctorLoading] = useState(false);
     const [patientLoading, setPatientLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleDoctorChange = (event) => {
         const { name, value } = event.target;
@@ -108,7 +110,13 @@ function EmpleadoContent() {
                             <h2>Identidad corporativa</h2>
                             <p>Registra nuevos médicos y dales acceso seguro a la plataforma.</p>
                         </div>
-                        <span className="empleado-create-medico__badge">Alta express</span>
+                        <button
+                            type="button"
+                            className="empleado-create-medico__nav-button"
+                            onClick={() => navigate("/medico-tabla")}
+                        >
+                            Administrar médicos
+                        </button>
                     </header>
 
                     {doctorStatus && (
@@ -197,7 +205,13 @@ function EmpleadoContent() {
                             <h2>Ingreso de pacientes</h2>
                             <p>Genera accesos con datos básicos para tus nuevos registros.</p>
                         </div>
-                        <span className="empleado-create-medico__badge empleado-create-medico__badge--soft">Registro seguro</span>
+                        <button
+                            type="button"
+                            className="empleado-create-medico__nav-button"
+                            onClick={() => navigate("/paciente-tabla")}
+                        >
+                            Administrar pacientes
+                        </button>
                     </header>
 
                     {patientStatus && (
